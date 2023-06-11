@@ -16,6 +16,52 @@ The stack is a LIFO (last in, first out) data structure. It is used to store dat
 
 All instructions interact with the stack in one way or another. Pushing data on top of the stack (PUSHx) costs 3 gas, while popping data from the stack (POP) costs 2 gas.
 
+## Memory
+
+### Basics
+
+Contract memory is a byte array, where data can be stored in 32 bytes or 1 byte chunks and read in 32 bytes chunks. Elements in memory always occupy multiples of 32 bytes, even if the data uses less bytes. Unlike with contract storage, there is no variable packing. Memory is temporary and only exists during the execution of a transaction.
+
+![memory](images/memory.png)
+
+Solidity reserves four 32-byte slots, with specific byte ranges (inclusive of endpoints) being used as follows:
+
+- `0x00` to `0x3f`: scratch space for hashing method
+- `0x40` to `0x5f`: free memory pointer (currently allocated memory size)
+- `0x60` to `0x7f`: zero slot
+
+The zero slot is used as initial value for dynamic memory arrays and should never be written to. This also means that the free memory pointer points to `0x80` initially. Memory is never freed, so the free memory pointer only increases.
+
+> Sidenote: The bytecode sequence `6080604052` you see at the start of the runtime bytecode of almost every contract is the initialization of the free memory pointer. It is the bytecode for `mstore(0x40, 0x80)`, which stores the value `0x80` at memory location `0x40`.
+
+### Gas costs related to memory
+
+The opcodes related to memory are:
+
+![memory_opcodes](images/memory_opcodes.png)
+
+All three opcodes have a static gas cost of 3, and a dynamic gas cost related to the memory expansion cost.
+
+![memorycost](images/memorycost.png)
+
+#### Memory expansion
+
+If you write to, or read from, a memory location that is not yet allocated, the memory is expanded in 32 byte chunks. The cost of this expansion is:
+
+![mem_equation](images/mem_equation.png)
+
+where `a` is the size of the memory.
+
+From the Yellowpaper:
+
+> Note also that C_mem is the memory cost function (the expansion function being the difference between the cost before
+> and after). It is a polynomial, with the higher-order coefficient divided and floored, and thus linear up to 704B of memory
+> used, after which it costs substantially more.
+
+This is also referred to as memory explosion, since the cost of expanding memory is not linear, but quadratic.
+
+Run `forge test --mc MemoryTest -vvvv` to see the gas costs and the costs of memory expansion in detail.
+
 ## Storage
 
 ### Basics
@@ -79,52 +125,6 @@ The opcodes related to storage are `SLOAD` and `SSTORE`. Storage reads and write
 Since EIP-2930 it is possible to specify a list of addresses and storage keys which will be touched during the transaction execution. When an address or storage slot is present in that list, it is called "warm", otherwise it is "cold". This allows to reduce the gas costs for storage reads and writes as seen in the image above.
 
 Run `forge test --mc StorageTest -vvvv` to see the gas costs in detail.
-
-## Memory
-
-### Basics
-
-Contract memory is a byte array, where data can be stored in 32 bytes or 1 byte chunks and read in 32 bytes chunks. Elements in memory always occupy multiples of 32 bytes, even if the data uses less bytes. Unlike with contract storage, there is no variable packing. Memory is temporary and only exists during the execution of a transaction.
-
-![memory](images/memory.png)
-
-Solidity reserves four 32-byte slots, with specific byte ranges (inclusive of endpoints) being used as follows:
-
-- `0x00` to `0x3f`: scratch space for hashing method
-- `0x40` to `0x5f`: free memory pointer (currently allocated memory size)
-- `0x60` to `0x7f`: zero slot
-
-The zero slot is used as initial value for dynamic memory arrays and should never be written to. This also means that the free memory pointer points to `0x80` initially. Memory is never freed, so the free memory pointer only increases.
-
-> Sidenote: The bytecode sequence `6080604052` you see at the start of the runtime bytecode of almost every contract is the initialization of the free memory pointer. It is the bytecode for `mstore(0x40, 0x80)`, which stores the value `0x80` at memory location `0x40`.
-
-### Gas costs related to memory
-
-The opcodes related to memory are:
-
-![memory_opcodes](images/memory_opcodes.png)
-
-All three opcodes have a static gas cost of 3, and a dynamic gas cost related to the memory expansion cost.
-
-![memorycost](images/memorycost.png)
-
-#### Memory expansion
-
-If you write to, or read from, a memory location that is not yet allocated, the memory is expanded in 32 byte chunks. The cost of this expansion is:
-
-![mem_equation](images/mem_equation.png)
-
-where `a` is the size of the memory.
-
-From the Yellowpaper:
-
-> Note also that C_mem is the memory cost function (the expansion function being the difference between the cost before
-> and after). It is a polynomial, with the higher-order coefficient divided and floored, and thus linear up to 704B of memory
-> used, after which it costs substantially more.
-
-This is also referred to as memory explosion, since the cost of expanding memory is not linear, but quadratic.
-
-Run `forge test --mc MemoryTest -vvvv` to see the gas costs and the costs of memory expansion in detail.
 
 ## Calldata
 
