@@ -12,3 +12,14 @@ docs/
 
 # Dotenv file
 .env
+
+# Optimized contracts
+/src/practice/optimized/
+
+# other
+src/*
+!src/StoragePacking.sol
+README_WIP.md
+OPTIMIZATIONS.md
+test/*
+!test/basics/
