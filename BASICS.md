@@ -1,3 +1,21 @@
+# EVM Basics
+
+The Ethereum Virtual Machine is a stack-based computer, i.e. all instructions take their parameter from the stack (except PUSHx, which takes it from the code). It is deterministic, so it will always provide the same outputs for the same inputs, no matter the machine it is run on.
+
+When the EVM executes a smart contract it creates an execution context. It contains several data regions, a program counter and other information like the current caller and the address of the current code. See the image below for more information.
+
+![evm](images/evm.png)
+
+## Stack
+
+### Basics
+
+The stack is a LIFO (last in, first out) data structure. It is used to store data and intermediate results during execution. The stack has a maximum size of 1024 elements, but only the first 16 elements are accessible -- if you try to access a element further down, you will be greeted with the infamous `Stack to deep` error. Each element on the stack has a size of 256 bits.
+
+### Gas costs related to the stack
+
+All instructions interact with the stack in one way or another. Pushing data on top of the stack (PUSHx) costs 3 gas, while popping data from the stack (POP) costs 2 gas.
+
 ## Storage
 
 ### Basics
@@ -23,7 +41,7 @@ We can inspect the storage of smart contracts with `forge inspect MyContract sto
 
 ### Gas costs related to storage
 
-The opcodes related to storage are `SLOAD` and `SSTORE`. Storage reads and writes are, besides contract creation, the most expensive operations in the EVM. Both have a minimum cost of 100 gas and an additional cost depending on the state of the storage slot.
+The opcodes related to storage are `SLOAD` and `SSTORE`. Storage reads and writes are, besides contract creation (which costs at least 32k gas), the most expensive operations in the EVM. Both have a minimum cost of 100 gas and an additional cost depending on the state of the storage slot.
 
 ![storage gas costs](images/storage_opcodes.png)
 
