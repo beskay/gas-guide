@@ -3,6 +3,7 @@ pragma solidity 0.8.16;
 
 import "forge-std/Test.sol";
 
+/// @dev Disable the optimizer when running tests for this contract
 contract StorageTest is Test {
     uint256 internal a;
     uint256 internal b = 1;

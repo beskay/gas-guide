@@ -3,23 +3,24 @@ pragma solidity 0.8.16;
 
 import "forge-std/Test.sol";
 
+/// @dev Disable the optimizer when running tests for this contract
 contract MemoryTest is Test {
     function setUp() public {}
 
-    // 222 gas
+    // 395 gas
     function testReadMemory() public pure returns (uint256) {
         uint256 temp = 1;
 
         return temp;
     }
 
-    // 187 gas
+    // 210 gas
     function testSetMemory() public pure {
         uint256 temp = 1;
         temp = 2;
     }
 
-    // 8278 gas
+    // 8321 gas
     function testMemExpansionSmall() public pure {
         uint256[1000] memory temp;
 
@@ -27,7 +28,7 @@ contract MemoryTest is Test {
         temp[0] = 1;
     }
 
-    // 255810
+    // 255819
     // We only write ten times more data to memory, but it costs ~31 times more gas
     function testMemExpansionMedium() public pure {
         uint256[10000] memory temp;
@@ -36,7 +37,7 @@ contract MemoryTest is Test {
         temp[0] = 1;
     }
 
-    // 20133154
+    // 20133186
     // 100x more data, ~2432x more gas compared to testMemExpansionSmall
     function testMemExpansionBig() public pure {
         uint256[100000] memory temp;
