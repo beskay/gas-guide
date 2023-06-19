@@ -4,9 +4,17 @@ All programmable compution in Ethereum is subject to fees, which are paid in gas
 
 ![gas](images/gas.png)
 
-Each opcode (EVM instruction) has a fixed cost which is paid upon execution. Some opcodes have a dynamic cost on top of the fixed cost, which is dependant on several factors. Opcodes with a dynamic gas cost are for example the instructions related to storage or memory.
+Each opcode (EVM instruction) has a fixed cost that is paid upon execution. Some opcodes have a dynamic cost on top of the fixed cost, which is dependent on several factors. Opcodes with a dynamic gas cost include instructions related to storage or memory.
 
-The more complex your transaction, so the more instruction it takes to execute, the more fees you have to pay (values taken from [Ethereum Gas Tacker](https://etherscan.io/gastracker)):
+## Gas costs
+
+The total transaction gas cost is the sum of
+
+1. The base transaction costs (21k gas).
+2. The costs for calldata (4 gas for a zero byte, 16 gas for a nonzero byte).
+3. The execution costs.
+
+The more complex your transaction is, meaning the more instructions it takes to execute, the more expensive it becomes (values taken from [Ethereum Gas Tracker](https://etherscan.io/gastracker)):
 
 - [ETH Transfer](https://etherscan.io/tx/0x051f99743f8d211bf24ab7e6aec7dc17a6a7335fe12579b6c58cba856a2988cf): 21k gas
 - [ERC20 Transfer](https://etherscan.io/tx/0xb3e3302626b84b7c56f99e492dddcbcbd9db6dbbcc5253c8e0e8a7bb49ca4ece): ~65k gas
@@ -22,8 +30,8 @@ A seen above a standard ETH transfer costs 21k gas, which is the minimum amount 
 
 Since EIP-1559, the gas price consists of a
 
-- Base fee, which is set dynamically based on network demand and is burned
-- Priority fee, which is a tip for validators to prioritize your transaction
+- Base fee, which is set dynamically based on network demand and is burned.
+- Priority fee, which is a tip for validators to prioritize your transaction.
 
 The fee you pay in USD is calculated as follows:
 
@@ -31,7 +39,7 @@ The fee you pay in USD is calculated as follows:
 (gas used x gas price (in gwei) x ether price (in USD)) / 1 billion
 ```
 
-For example, with a gas price of 50 gwei and an ETH price of $2k a standard ETH transfer costs
+For example, with a gas price of 50 gwei and an ETH price of $2k a standard ETH transfer costs:
 
 ```
 (21k x 50 x 2000) / 1 billion = $2.1
