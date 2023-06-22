@@ -91,21 +91,23 @@ The opcodes related to storage are `SLOAD` and `SSTORE`. Storage reads and write
 
 **Storage writes**
 
-- zero -> nonzero: 20k gas; if first-time access, additional 2.1k gas
+- zero -> nonzero: 20k gas
 
-  > G_coldsload + G_sset = 20k gas + 2.1k gas
+  > G_sset = 20k gas
 
-- nonzero -> nonzero: 5k gas
+- nonzero -> nonzero: 2.9k gas
 
-  > G_coldsload + G_sreset = 2900 gas + 2100 gas
+  > G_sreset = 2.9k gas
 
 - nonzero -> zero: refund
 
   > Refund 4800 gas per cleared storage var (since EIP-3529)
   > Refunds are capped to total_gas_used / 5; to get a refund of 4800 gas, the transaction needs to use 24k gas at a minimum
 
-- zero -> zero: 2.2k gas
-  > G_coldsload + G_warmaccess = 2100 gas + 100 gas
+- zero -> zero: 100 gas
+  > G_warmaccess = 100 gas
+
+If a storage variable is accessed the first time in a transaction, it costs an additional 2.1k gas (G_coldsload). If a storage variable was already written to (the storage slot is 'dirty'), each additional write in the same transaction costs 100 gas.
 
 **Storage reads**
 
@@ -118,7 +120,7 @@ The opcodes related to storage are `SLOAD` and `SSTORE`. Storage reads and write
 
 **Accesslist**
 
-Since EIP-2930, it is possible to specify a list of addresses and storage keys that will be touched during the transaction execution. When an address or storage slot is present in that list, it is called "warm"; otherwise, it is "cold." This allows reducing the gas costs for storage reads and writes as seen in the image above.
+Since EIP-2930, it is possible to specify a list of addresses and storage keys that will be touched during the transaction execution. When an address or storage slot is present in that list, it is called "warm"; otherwise, it is "cold." This allows reducing the gas costs for storage reads and writes as seen in the image above. See the links in the references for more information.
 
 Run `forge test --mc StorageTest -vvvv` to see the gas costs in detail.
 
@@ -166,8 +168,9 @@ A great resource to estimate gas costs of various opcodes is [evm.codes](https:/
 - [EVM Deep Dives: The Path to Shadowy 3EA](https://noxx.substack.com/p/evm-deep-dives-the-path-to-shadowy-3ea?s=r)
 - [Diving into the Ethereum VM: The Hidden Costs of Arrays](https://medium.com/@hayeah/diving-into-the-ethereum-vm-the-hidden-costs-of-arrays-28e119f04a9b)
 - [EIP-3529](https://eips.ethereum.org/EIPS/eip-3529)
-- [EIP-2930](https://eips.ethereum.org/EIPS/eip-2930)
 - [evm.storage](https://evm.storage/)
+- [EIP-2930: Access Lists](https://eips.ethereum.org/EIPS/eip-2930)
+- [@libevm - Access Lists](https://twitter.com/libevm/status/1523141360076812288)
 
 ### Memory
 

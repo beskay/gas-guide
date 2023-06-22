@@ -1,0 +1,55 @@
+/// @use-src 38:"src/DefaultVars.sol"
+object "DefaultVars_33127" {
+    code {
+        {
+            /// @src 38:245:401  "contract DefaultVars {..."
+            let _1 := memoryguard(0x80)
+            mstore(64, _1)
+            if callvalue() { revert(0, 0) }
+            sstore(/** @src 38:293:294  "0" */ 0x00, 0x00)
+            /// @src 38:245:401  "contract DefaultVars {..."
+            sstore(/** @src 38:318:323  "false" */ 0x01, /** @src 38:245:401  "contract DefaultVars {..." */ and(sload(/** @src 38:318:323  "false" */ 0x01), /** @src 38:245:401  "contract DefaultVars {..." */ not(sub(shl(168, 1), 1))))
+            sstore(/** @src 38:387:398  "bytes32(\"\")" */ 0x02, /** @src 38:293:294  "0" */ 0x00)
+            /// @src 38:245:401  "contract DefaultVars {..."
+            let _2 := datasize("DefaultVars_33127_deployed")
+            codecopy(_1, dataoffset("DefaultVars_33127_deployed"), _2)
+            return(_1, _2)
+        }
+    }
+    /// @use-src 38:"src/DefaultVars.sol"
+    object "DefaultVars_33127_deployed" {
+        code {
+            {
+                /// @src 38:245:401  "contract DefaultVars {..."
+                revert(0, 0)
+            }
+        }
+        data ".metadata" hex"a26469706673582212200e594f66ffbe1b57b8509299c45b2f2ee8c8e0dea9554442c09d154289c1b4d364736f6c63430008100033"
+    }
+}
+
+
+/// @use-src 38:"src/DefaultVars.sol"
+object "DefaultVarsOptimized_33108" {
+    code {
+        {
+            /// @src 38:87:213  "contract DefaultVarsOptimized {..."
+            let _1 := memoryguard(0x80)
+            mstore(64, _1)
+            if callvalue() { revert(0, 0) }
+            let _2 := datasize("DefaultVarsOptimized_33108_deployed")
+            codecopy(_1, dataoffset("DefaultVarsOptimized_33108_deployed"), _2)
+            return(_1, _2)
+        }
+    }
+    /// @use-src 38:"src/DefaultVars.sol"
+    object "DefaultVarsOptimized_33108_deployed" {
+        code {
+            {
+                /// @src 38:87:213  "contract DefaultVarsOptimized {..."
+                revert(0, 0)
+            }
+        }
+        data ".metadata" hex"a2646970667358221220a24c79c55d3b7b54e4a6cf72cd025bc6fe420fbfc85ca3753f448aa7cd10110064736f6c63430008100033"
+    }
+}

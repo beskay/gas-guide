@@ -1,0 +1,105 @@
+/// @use-src 41:"src/StoragePacking.sol"
+object "StoragePacking_33306" {
+    code {
+        {
+            /// @src 41:1850:2609  "contract StoragePacking is StorageLayout {..."
+            let _1 := memoryguard(0x80)
+            mstore(64, _1)
+            if callvalue() { revert(0, 0) }
+            let _2 := datasize("StoragePacking_33306_deployed")
+            codecopy(_1, dataoffset("StoragePacking_33306_deployed"), _2)
+            return(_1, _2)
+        }
+    }
+    /// @use-src 41:"src/StoragePacking.sol"
+    object "StoragePacking_33306_deployed" {
+        code {
+            {
+                /// @src 41:1850:2609  "contract StoragePacking is StorageLayout {..."
+                let _1 := memoryguard(0x80)
+                mstore(64, _1)
+                if iszero(lt(calldatasize(), 4))
+                {
+                    let _2 := 0
+                    switch shr(224, calldataload(_2))
+                    case 0x102f49a5 { // writeUint256()
+                        if callvalue() { revert(_2, _2) }
+                        if slt(add(calldatasize(), not(3)), _2) { revert(_2, _2) }
+                        let _3 := sload(/** @src 41:1975:1976  "b" */ 0x01)
+                        /// @src 41:1850:2609  "contract StoragePacking is StorageLayout {..."
+                        if eq(_3, not(0))
+                        {
+                            mstore(_2, shl(224, 0x4e487b71))
+                            mstore(4, 0x11)
+                            revert(_2, 0x24)
+                        }
+                        sstore(/** @src 41:1975:1976  "b" */ 0x01, /** @src 41:1850:2609  "contract StoragePacking is StorageLayout {..." */ add(_3, /** @src 41:1975:1976  "b" */ 0x01))
+                        /// @src 41:1850:2609  "contract StoragePacking is StorageLayout {..."
+                        return(_1, _2)
+                    }
+                    case 0x11c3a83a { // writeUint128()
+                        if callvalue() { revert(_2, _2) }
+                        if slt(add(calldatasize(), not(3)), _2) { revert(_2, _2) }
+                        let _4 := sload(/** @src 41:2219:2220  "c" */ 0x03)
+                        /// @src 41:1850:2609  "contract StoragePacking is StorageLayout {..."
+                        let _5 := 0xffffffffffffffffffffffffffffffff
+                        let value := and(_4, _5)
+                        if eq(value, _5)
+                        {
+                            mstore(_2, shl(224, 0x4e487b71))
+                            mstore(4, 0x11)
+                            revert(_2, 0x24)
+                        }
+                        sstore(/** @src 41:2219:2220  "c" */ 0x03, /** @src 41:1850:2609  "contract StoragePacking is StorageLayout {..." */ or(and(_4, not(0xffffffffffffffffffffffffffffffff)), and(add(value, 1), _5)))
+                        return(mload(64), _2)
+                    }
+                    case 0x33fe0dda { // writeStruct()
+                        if callvalue() { revert(_2, _2) }
+                        if slt(add(calldatasize(), not(3)), _2) { revert(_2, _2) }
+                        /// @src 41:2389:2400  "Entry(1, 2)"
+                        let expr_mpos := /** @src 41:1850:2609  "contract StoragePacking is StorageLayout {..." */ allocate_memory()
+                        mstore(expr_mpos, /** @src 41:2395:2396  "1" */ 0x01)
+                        /// @src 41:1850:2609  "contract StoragePacking is StorageLayout {..."
+                        mstore(/** @src 41:2389:2400  "Entry(1, 2)" */ add(expr_mpos, 32), /** @src 41:2398:2399  "2" */ 0x02)
+                        /// @src 41:1850:2609  "contract StoragePacking is StorageLayout {..."
+                        sstore(/** @src 41:2385:2400  "f = Entry(1, 2)" */ 0x05, /** @src 41:1850:2609  "contract StoragePacking is StorageLayout {..." */ 0x0200000000000000000000000000000001)
+                        return(mload(64), _2)
+                    }
+                    case 0x509c389e { // readStruct
+                        if callvalue() { revert(_2, _2) }
+                        if slt(add(calldatasize(), not(3)), _2) { revert(_2, _2) }
+                        let memPtr := allocate_memory()
+                        mstore(memPtr, _2)
+                        mstore(add(memPtr, 32), _2)
+                        let value_1 := allocate_memory()
+                        let _6 := sload(/** @src 41:2597:2598  "f" */ 0x05)
+                        /// @src 41:1850:2609  "contract StoragePacking is StorageLayout {..."
+                        let _7 := 0xffffffffffffffffffffffffffffffff
+                        let cleaned := and(_6, _7)
+                        mstore(value_1, cleaned)
+                        let _8 := add(value_1, 32)
+                        mstore(_8, shr(128, _6))
+                        let memPos := mload(64)
+                        mstore(memPos, cleaned)
+                        mstore(add(memPos, 32), and(mload(_8), _7))
+                        return(memPos, 64)
+                    }
+                }
+                revert(0, 0)
+            }
+            function allocate_memory() -> memPtr
+            {
+                memPtr := mload(64)
+                let newFreePtr := add(memPtr, 64)
+                if or(gt(newFreePtr, 0xffffffffffffffff), lt(newFreePtr, memPtr))
+                {
+                    mstore(0, shl(224, 0x4e487b71))
+                    mstore(4, 0x41)
+                    revert(0, 0x24)
+                }
+                mstore(64, newFreePtr)
+            }
+        }
+        data ".metadata" hex"a2646970667358221220c6b64495025757a1818d3fc3230a2d01be333de4f176892393c42dfc6c21190464736f6c63430008100033"
+    }
+}

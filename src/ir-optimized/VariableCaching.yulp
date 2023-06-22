@@ -1,0 +1,159 @@
+/// @use-src 43:"src/VariableCaching.sol"
+object "VariableCaching_33441" {
+    code {
+        {
+            /// @src 43:57:530  "contract VariableCaching {..."
+            let _1 := memoryguard(0x80)
+            if callvalue() { revert(0, 0) }
+            let newFreePtr := add(_1, 288)
+            if or(gt(newFreePtr, sub(shl(64, 1), 1)), lt(newFreePtr, _1))
+            {
+                mstore(/** @src -1:-1:-1 */ 0, /** @src 43:57:530  "contract VariableCaching {..." */ shl(224, 0x4e487b71))
+                mstore(4, 0x41)
+                revert(/** @src -1:-1:-1 */ 0, /** @src 43:57:530  "contract VariableCaching {..." */ 0x24)
+            }
+            mstore(64, newFreePtr)
+            /// @src 43:111:112  "1"
+            let _2 := 0x01
+            /// @src 43:57:530  "contract VariableCaching {..."
+            mstore(_1, /** @src 43:111:112  "1" */ _2)
+            /// @src 43:110:137  "[1, 2, 3, 4, 5, 6, 7, 8, 9]"
+            let _3 := 32
+            /// @src 43:57:530  "contract VariableCaching {..."
+            mstore(/** @src 43:110:137  "[1, 2, 3, 4, 5, 6, 7, 8, 9]" */ add(_1, _3), /** @src 43:114:115  "2" */ 0x02)
+            /// @src 43:57:530  "contract VariableCaching {..."
+            mstore(/** @src 43:110:137  "[1, 2, 3, 4, 5, 6, 7, 8, 9]" */ add(_1, /** @src 43:57:530  "contract VariableCaching {..." */ 64), /** @src 43:117:118  "3" */ 0x03)
+            /// @src 43:57:530  "contract VariableCaching {..."
+            mstore(/** @src 43:110:137  "[1, 2, 3, 4, 5, 6, 7, 8, 9]" */ add(_1, 96), /** @src 43:120:121  "4" */ 0x04)
+            /// @src 43:57:530  "contract VariableCaching {..."
+            mstore(/** @src 43:110:137  "[1, 2, 3, 4, 5, 6, 7, 8, 9]" */ add(_1, 128), /** @src 43:57:530  "contract VariableCaching {..." */ 5)
+            mstore(/** @src 43:110:137  "[1, 2, 3, 4, 5, 6, 7, 8, 9]" */ add(_1, 160), /** @src 43:126:127  "6" */ 0x06)
+            /// @src 43:57:530  "contract VariableCaching {..."
+            mstore(/** @src 43:110:137  "[1, 2, 3, 4, 5, 6, 7, 8, 9]" */ add(_1, 192), /** @src 43:129:130  "7" */ 0x07)
+            /// @src 43:57:530  "contract VariableCaching {..."
+            mstore(/** @src 43:110:137  "[1, 2, 3, 4, 5, 6, 7, 8, 9]" */ add(_1, 224), /** @src 43:132:133  "8" */ 0x08)
+            /// @src 43:110:137  "[1, 2, 3, 4, 5, 6, 7, 8, 9]"
+            let _4 := 9
+            /// @src 43:57:530  "contract VariableCaching {..."
+            mstore(/** @src 43:110:137  "[1, 2, 3, 4, 5, 6, 7, 8, 9]" */ add(_1, 256), _4)
+            /// @src 43:57:530  "contract VariableCaching {..."
+            let start := /** @src 43:110:137  "[1, 2, 3, 4, 5, 6, 7, 8, 9]" */ _4
+            /// @src 43:57:530  "contract VariableCaching {..."
+            for { }
+            lt(start, 0x0a)
+            {
+                start := add(start, /** @src 43:111:112  "1" */ _2)
+            }
+            /// @src 43:57:530  "contract VariableCaching {..."
+            {
+                sstore(start, /** @src -1:-1:-1 */ 0)
+            }
+            /// @src 43:57:530  "contract VariableCaching {..."
+            let srcPtr := _1
+            let i := /** @src -1:-1:-1 */ 0
+            /// @src 43:57:530  "contract VariableCaching {..."
+            for { }
+            lt(i, /** @src 43:110:137  "[1, 2, 3, 4, 5, 6, 7, 8, 9]" */ _4)
+            /// @src 43:57:530  "contract VariableCaching {..."
+            {
+                i := add(i, /** @src 43:111:112  "1" */ _2)
+            }
+            /// @src 43:57:530  "contract VariableCaching {..."
+            {
+                let cleaned := and(mload(srcPtr), 0xff)
+                srcPtr := add(srcPtr, /** @src 43:110:137  "[1, 2, 3, 4, 5, 6, 7, 8, 9]" */ _3)
+                /// @src 43:57:530  "contract VariableCaching {..."
+                sstore(i, cleaned)
+            }
+            let _5 := mload(64)
+            let _6 := datasize("VariableCaching_33441_deployed")
+            codecopy(_5, dataoffset("VariableCaching_33441_deployed"), _6)
+            return(_5, _6)
+        }
+    }
+    /// @use-src 43:"src/VariableCaching.sol"
+    object "VariableCaching_33441_deployed" {
+        code {
+            {
+                /// @src 43:57:530  "contract VariableCaching {..."
+                mstore(64, memoryguard(0x80))
+                if iszero(lt(calldatasize(), 4))
+                {
+                    let _1 := 0
+                    switch shr(224, calldataload(_1))
+                    case 0x364a9319 { // sumArrayOptimized()
+                        if callvalue() { revert(_1, _1) }
+                        if slt(add(calldatasize(), not(3)), _1) { revert(_1, _1) }
+                        /// @src 43:249:265  "uint256 localSum"
+                        let var_localSum := /** @src 43:57:530  "contract VariableCaching {..." */ _1
+                        /// @src 43:281:294  "uint256 i = 0"
+                        let var_i := /** @src 43:57:530  "contract VariableCaching {..." */ _1
+                        /// @src 43:276:360  "for (uint256 i = 0; i < length; i++) {..."
+                        for { }
+                        /** @src 43:296:306  "i < length" */ lt(var_i, /** @src 43:57:530  "contract VariableCaching {..." */ 0x0a)
+                        /// @src 43:281:294  "uint256 i = 0"
+                        {
+                            /// @src 43:308:311  "i++"
+                            var_i := increment_uint256(var_i)
+                        }
+                        {
+                            /// @src 43:327:349  "localSum += myArray[i]"
+                            var_localSum := checked_add_uint256(var_localSum, /** @src 43:57:530  "contract VariableCaching {..." */ sload(/** @src 43:339:349  "myArray[i]" */ var_i))
+                        }
+                        /// @src 43:57:530  "contract VariableCaching {..."
+                        sstore(0x0a, var_localSum)
+                        return(mload(64), _1)
+                    }
+                    case 0x81d73423 { // sumArray()
+                        if callvalue() { revert(_1, _1) }
+                        if slt(add(calldatasize(), not(3)), _1) { revert(_1, _1) }
+                        /// @src 43:439:452  "uint256 i = 0"
+                        let var_i_1 := /** @src 43:57:530  "contract VariableCaching {..." */ _1
+                        /// @src 43:434:521  "for (uint256 i = 0; i < myArray.length; i++) {..."
+                        for { }
+                        /** @src 43:439:452  "uint256 i = 0" */ 1
+                        {
+                            /// @src 43:474:477  "i++"
+                            var_i_1 := increment_uint256(var_i_1)
+                        }
+                        {
+                            /// @src 43:57:530  "contract VariableCaching {..."
+                            let _2 := 0x0a
+                            /// @src 43:454:472  "i < myArray.length"
+                            if iszero(lt(var_i_1, /** @src 43:57:530  "contract VariableCaching {..." */ _2))
+                            /// @src 43:454:472  "i < myArray.length"
+                            { break }
+                            /// @src 43:57:530  "contract VariableCaching {..."
+                            sstore(_2, /** @src 43:493:510  "sum += myArray[i]" */ checked_add_uint256(/** @src 43:57:530  "contract VariableCaching {..." */ sload(_2), sload(/** @src 43:500:510  "myArray[i]" */ var_i_1)))
+                        }
+                        /// @src 43:57:530  "contract VariableCaching {..."
+                        return(mload(64), _1)
+                    }
+                }
+                revert(0, 0)
+            }
+            function increment_uint256(value) -> ret
+            {
+                if eq(value, not(0))
+                {
+                    mstore(0, shl(224, 0x4e487b71))
+                    mstore(4, 0x11)
+                    revert(0, 0x24)
+                }
+                ret := add(value, 1)
+            }
+            function checked_add_uint256(x, y) -> sum
+            {
+                sum := add(x, y)
+                if gt(x, sum)
+                {
+                    mstore(0, shl(224, 0x4e487b71))
+                    mstore(4, 0x11)
+                    revert(0, 0x24)
+                }
+            }
+        }
+        data ".metadata" hex"a2646970667358221220e9aaa82d25144c5305ae5fc4ad24d89624475234a50cdec08747892eda2be2a964736f6c63430008100033"
+    }
+}
+

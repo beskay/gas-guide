@@ -1,0 +1,136 @@
+/* 
+Function selectors:
+{
+  "setDynamicArray()": "c3fa051e",
+  "setDynamicBytes()": "8379fa5b",
+  "setFixedArray()": "7892e6df",
+  "setFixedBytes()": "1d56cbf3",
+  "setString()": "1547a41a"
+} 
+*/
+
+/// @use-src 39:"src/FixedSize.sol"
+object "FixedSize_33166" {
+    code {
+        {
+            /// @src 39:57:720  "contract FixedSize {..."
+            let _1 := memoryguard(0x80)
+            mstore(64, _1)
+            if callvalue() { revert(0, 0) }
+            let _2 := datasize("FixedSize_33166_deployed")
+            codecopy(_1, dataoffset("FixedSize_33166_deployed"), _2)
+            return(_1, _2)
+        }
+    }
+    /// @use-src 39:"src/FixedSize.sol"
+    object "FixedSize_33166_deployed" {
+        code {
+            {
+                /// @src 39:57:720  "contract FixedSize {..."
+                let _1 := memoryguard(0x80)
+                mstore(64, _1)
+                if iszero(lt(calldatasize(), 4))
+                {
+                    let _2 := 0
+                    switch shr(224, calldataload(_2))
+                    case 0x1547a41a { // setString()
+                        if callvalue() { revert(_2, _2) }
+                        if slt(add(calldatasize(), not(3)), _2) { revert(_2, _2) }
+                        let _3 := sload(/** @src 39:674:711  "myString = \"test test test test test\"" */ 0x0d)
+                        /// @src 39:57:720  "contract FixedSize {..."
+                        let length := _2
+                        let _4 := 1
+                        length := shr(_4, _3)
+                        let outOfPlaceEncoding := and(_3, _4)
+                        if iszero(outOfPlaceEncoding) { length := and(length, 0x7f) }
+                        if eq(outOfPlaceEncoding, lt(length, 32))
+                        {
+                            mstore(_2, shl(224, 0x4e487b71))
+                            mstore(4, 0x22)
+                            revert(_2, 0x24)
+                        }
+                        if gt(length, 31)
+                        {
+                            let _5 := 97569884605916225051403212656556507955018248777258318895762758024193532305077
+                            let _6 := add(_5, shr(5, add(length, 31)))
+                            let start := _5
+                            for { } lt(start, _6) { start := add(start, _4) }
+                            { sstore(start, _2) }
+                        }
+                        sstore(/** @src 39:674:711  "myString = \"test test test test test\"" */ 0x0d, /** @src 39:57:720  "contract FixedSize {..." */ add("test test test test test", 48))
+                        return(_1, _2)
+                    }
+                    case 0x1d56cbf3 { // setFixedBytes()
+                        if callvalue() { revert(_2, _2) }
+                        if slt(add(calldatasize(), not(3)), _2) { revert(_2, _2) }
+                        sstore(/** @src 39:452:491  "fixedBytes = \"test test test test test\"" */ 0x0b, /** @src 39:57:720  "contract FixedSize {..." */ 0x7465737420746573742074657374207465737420746573740000000000000000)
+                        return(mload(64), _2)
+                    }
+                    case 0x7892e6df { // setFixedArray()
+                        if callvalue() { revert(_2, _2) }
+                        if slt(add(calldatasize(), not(3)), _2) { revert(_2, _2) }
+                        sstore(_2, /** @src 39:285:286  "1" */ 0x01)
+                        /// @src 39:57:720  "contract FixedSize {..."
+                        return(mload(64), _2)
+                    }
+                    case 0x8379fa5b { // setDynamicBytes()
+                        if callvalue() { revert(_2, _2) }
+                        if slt(add(calldatasize(), not(3)), _2) { revert(_2, _2) }
+                        let _7 := sload(/** @src 39:565:606  "dynamicBytes = \"test test test test test\"" */ 0x0c)
+                        /// @src 39:57:720  "contract FixedSize {..."
+                        let length_1 := _2
+                        let _8 := 1
+                        length_1 := shr(_8, _7)
+                        let outOfPlaceEncoding_1 := and(_7, _8)
+                        if iszero(outOfPlaceEncoding_1)
+                        {
+                            length_1 := and(length_1, 0x7f)
+                        }
+                        if eq(outOfPlaceEncoding_1, lt(length_1, 32))
+                        {
+                            mstore(_2, shl(224, 0x4e487b71))
+                            mstore(4, 0x22)
+                            revert(_2, 0x24)
+                        }
+                        if gt(length_1, 31)
+                        {
+                            let _9 := 101051993584849178915136821395265346177868384823507754984078593667947067386055
+                            let _10 := add(_9, shr(5, add(length_1, 31)))
+                            let start_1 := _9
+                            for { } lt(start_1, _10) { start_1 := add(start_1, _8) }
+                            { sstore(start_1, _2) }
+                        }
+                        sstore(/** @src 39:565:606  "dynamicBytes = \"test test test test test\"" */ 0x0c, /** @src 39:57:720  "contract FixedSize {..." */ add("test test test test test", 48))
+                        return(mload(64), _2)
+                    }
+                    case 0xc3fa051e { // setDynamicArray()
+                        if callvalue() { revert(_2, _2) }
+                        if slt(add(calldatasize(), not(3)), _2) { revert(_2, _2) }
+                        let oldLen := sload(/** @src 39:360:372  "dynamicArray" */ 0x0a)
+                        /// @src 39:57:720  "contract FixedSize {..."
+                        if iszero(lt(oldLen, 18446744073709551616))
+                        {
+                            mstore(_2, shl(224, 0x4e487b71))
+                            mstore(4, 0x41)
+                            revert(_2, 0x24)
+                        }
+                        let _11 := add(oldLen, /** @src 39:378:379  "1" */ 0x01)
+                        /// @src 39:57:720  "contract FixedSize {..."
+                        sstore(/** @src 39:360:372  "dynamicArray" */ 0x0a, /** @src 39:57:720  "contract FixedSize {..." */ _11)
+                        if iszero(lt(oldLen, _11))
+                        {
+                            mstore(_2, shl(224, 0x4e487b71))
+                            mstore(4, 0x32)
+                            revert(_2, 0x24)
+                        }
+                        sstore(add(89717814153306320011181716697424560163256864414616650038987186496166826726056, oldLen), /** @src 39:378:379  "1" */ 0x01)
+                        /// @src 39:57:720  "contract FixedSize {..."
+                        return(mload(64), _2)
+                    }
+                }
+                revert(0, 0)
+            }
+        }
+        data ".metadata" hex"a2646970667358221220d8dd56b434e41307540526ef0e8e2b30b2b8bd88fba137bded78fa1f7d2c678764736f6c63430008100033"
+    }
+}

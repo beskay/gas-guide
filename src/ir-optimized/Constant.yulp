@@ -1,0 +1,60 @@
+/// @use-src 17:"src/Constant.sol"
+object "Constant_29380" {
+    code {
+        {
+            /// @src 17:87:689  "contract Constant {..."
+            let _1 := memoryguard(0xc0)
+            mstore(64, _1)
+            if callvalue() { revert(0, 0) }
+            /// @src 17:133:184  "address(0x1234567890123456789012345678901234567890)"
+            mstore(128, /** @src 17:141:183  "0x1234567890123456789012345678901234567890" */ 0x1234567890123456789012345678901234567890)
+            /// @src 17:361:366  "b = 1"
+            mstore(160, /** @src 17:365:366  "1" */ 0x01)
+            /// @src 17:87:689  "contract Constant {..."
+            let _2 := datasize("Constant_29380_deployed")
+            codecopy(_1, dataoffset("Constant_29380_deployed"), _2)
+            setimmutable(_1, "29337", mload(/** @src 17:133:184  "address(0x1234567890123456789012345678901234567890)" */ 128))
+            /// @src 17:87:689  "contract Constant {..."
+            setimmutable(_1, "29339", mload(/** @src 17:361:366  "b = 1" */ 160))
+            /// @src 17:87:689  "contract Constant {..."
+            return(_1, _2)
+        }
+    }
+    /// @use-src 17:"src/Constant.sol"
+    object "Constant_29380_deployed" {
+        code {
+            {
+                /// @src 17:87:689  "contract Constant {..."
+                let _1 := memoryguard(0x80)
+                mstore(64, _1)
+                if iszero(lt(calldatasize(), 4))
+                {
+                    let _2 := 0
+                    switch shr(224, calldataload(_2))
+                    case 0x14637323 { // readMutable()
+                        if callvalue() { revert(_2, _2) }
+                        if slt(add(calldatasize(), not(3)), _2) { revert(_2, _2) }
+                        mstore(_1, sload(_2))
+                        return(_1, 32)
+                    }
+                    case 0x7a87681d { // readImmutable()
+                        if callvalue() { revert(_2, _2) }
+                        if slt(add(calldatasize(), not(3)), _2) { revert(_2, _2) }
+                        let memPos := mload(64)
+                        mstore(memPos, and(/** @src 17:570:571  "a" */ loadimmutable("29337"), /** @src 17:87:689  "contract Constant {..." */ sub(shl(160, 1), 1)))
+                        return(memPos, 32)
+                    }
+                    case 0xe69b67ab { // readConstant()
+                        if callvalue() { revert(_2, _2) }
+                        if slt(add(calldatasize(), not(3)), _2) { revert(_2, _2) }
+                        let memPos_1 := mload(64)
+                        mstore(memPos_1, shl(194, 0x1050509090d0d111))
+                        return(memPos_1, 32)
+                    }
+                }
+                revert(0, 0)
+            }
+        }
+        data ".metadata" hex"a2646970667358221220a44fadd2eba63cab6cc874e2ce5317517f5918b667cec61484aef4b137e71e9164736f6c63430008100033"
+    }
+}

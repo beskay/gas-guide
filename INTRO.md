@@ -12,7 +12,8 @@ The total transaction gas cost is the sum of
 
 1. The base transaction costs (21k gas).
 2. The costs for calldata (4 gas for a zero byte, 16 gas for a nonzero byte).
-3. The execution costs.
+3. OPTIONAL: The costs for the access list (EIP-2930)
+4. The execution costs.
 
 The more complex your transaction is, meaning the more instructions it takes to execute, the more expensive it becomes (values taken from [Ethereum Gas Tracker](https://etherscan.io/gastracker)):
 

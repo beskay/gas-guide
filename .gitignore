@@ -17,9 +17,8 @@ docs/
 /src/practice/optimized/
 
 # other
-src/*
-!src/StoragePacking.sol
+src/examples
+src/practice
 README_WIP.md
-OPTIMIZATIONS.md
-test/*
-!test/basics/
+OPTIMIZATIONS_WIP.md
+test/practice
