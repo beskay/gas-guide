@@ -1,0 +1,87 @@
+/// @use-src 42:"src/Unchecked.sol"
+object "Unchecked_33359" {
+    code {
+        {
+            /// @src 42:57:665  "contract Unchecked {..."
+            let _1 := memoryguard(0x80)
+            mstore(64, _1)
+            if callvalue() { revert(0, 0) }
+            let _2 := datasize("Unchecked_33359_deployed")
+            codecopy(_1, dataoffset("Unchecked_33359_deployed"), _2)
+            return(_1, _2)
+        }
+    }
+    /// @use-src 42:"src/Unchecked.sol"
+    object "Unchecked_33359_deployed" {
+        code {
+            {
+                /// @src 42:57:665  "contract Unchecked {..."
+                let _1 := memoryguard(0x80)
+                mstore(64, _1)
+                if iszero(lt(calldatasize(), 4))
+                {
+                    let _2 := 0
+                    switch shr(224, calldataload(_2))
+                    case 0x01276cd4 { // incrementLoopUnchecked()
+                        if callvalue() { revert(_2, _2) }
+                        if slt(add(calldatasize(), not(3)), _2) { revert(_2, _2) }
+                        /// @src 42:534:547  "uint256 i = 0"
+                        let var_i := /** @src 42:57:665  "contract Unchecked {..." */ _2
+                        /// @src 42:529:657  "for (uint256 i = 0; i < 100;) {..."
+                        for { }
+                        /** @src 42:549:556  "i < 100" */ lt(var_i, /** @src 42:553:556  "100" */ 0x64)
+                        /// @src 42:534:547  "uint256 i = 0"
+                        { }
+                        {
+                            /// @src 42:629:632  "++i"
+                            var_i := add(var_i, 1)
+                        }
+                        return(_1, _2)
+                    }
+                    case 0xc7fd0347 { // incrementUnchecked()
+                        if callvalue() { revert(_2, _2) }
+                        if slt(add(calldatasize(), not(3)), _2) { revert(_2, _2) }
+                        sstore(_2, add(sload(_2), 1))
+                        return(_1, _2)
+                    }
+                    case 0xd09de08a { // increment()
+                        if callvalue() { revert(_2, _2) }
+                        if slt(add(calldatasize(), not(3)), _2) { revert(_2, _2) }
+                        sstore(_2, increment_uint256(sload(_2)))
+                        return(mload(64), _2)
+                    }
+                    case 0xf90b8b31 { // incrementLoop()
+                        if callvalue() { revert(_2, _2) }
+                        if slt(add(calldatasize(), not(3)), _2) { revert(_2, _2) }
+                        /// @src 42:376:389  "uint256 i = 0"
+                        let var_i_1 := /** @src 42:57:665  "contract Unchecked {..." */ _2
+                        /// @src 42:371:445  "for (uint256 i = 0; i < 100; i++) {..."
+                        for { }
+                        /** @src 42:391:398  "i < 100" */ lt(var_i_1, /** @src 42:395:398  "100" */ 0x64)
+                        /// @src 42:376:389  "uint256 i = 0"
+                        {
+                            /// @src 42:400:403  "i++"
+                            var_i_1 := increment_uint256(var_i_1)
+                        }
+                        { }
+                        /// @src 42:57:665  "contract Unchecked {..."
+                        return(mload(64), _2)
+                    }
+                }
+                revert(0, 0)
+            }
+            function increment_uint256(value) -> ret
+            {
+                if eq(value, not(0))
+                {
+                    mstore(0, shl(224, 0x4e487b71))
+                    mstore(4, 0x11)
+                    revert(0, 0x24)
+                }
+                ret := add(value, 1)
+            }
+        }
+        data ".metadata" hex"a164736f6c6343000810000a"
+    }
+}
+

@@ -1,0 +1,102 @@
+
+/// @use-src 38:"src/CustomErrors.sol"
+object "CustomError_33067" {
+    code {
+        {
+            /// @src 38:81:267  "contract CustomError {..."
+            let _1 := memoryguard(0x80)
+            mstore(64, _1)
+            if callvalue() { revert(0, 0) }
+            sstore(/** @src 38:124:134  "msg.sender" */ 0x00, /** @src 38:81:267  "contract CustomError {..." */ or(and(sload(/** @src 38:124:134  "msg.sender" */ 0x00), /** @src 38:81:267  "contract CustomError {..." */ not(sub(shl(160, 1), 1))), /** @src 38:124:134  "msg.sender" */ caller()))
+            /// @src 38:81:267  "contract CustomError {..."
+            let _2 := datasize("CustomError_33067_deployed")
+            codecopy(_1, dataoffset("CustomError_33067_deployed"), _2)
+            return(_1, _2)
+        }
+    }
+    /// @use-src 38:"src/CustomErrors.sol"
+    object "CustomError_33067_deployed" {
+        code {
+            {
+                /// @src 38:81:267  "contract CustomError {..."
+                let _1 := memoryguard(0x80)
+                mstore(64, _1)
+                if iszero(lt(calldatasize(), 4))
+                {
+                    let _2 := 0
+                    if eq(0x40caae06, shr(224, calldataload(_2)))
+                    {
+                        if callvalue() { revert(_2, _2) }
+                        if slt(add(calldatasize(), not(3)), _2) { revert(_2, _2) }
+                        let _3 := sload(_2)
+                        /// @src 38:178:221  "if (msg.sender != owner) revert OnlyOwner()"
+                        if /** @src 38:182:201  "msg.sender != owner" */ iszero(eq(/** @src 38:182:192  "msg.sender" */ caller(), /** @src 38:81:267  "contract CustomError {..." */ and(_3, sub(shl(160, 1), 1))))
+                        /// @src 38:178:221  "if (msg.sender != owner) revert OnlyOwner()"
+                        {
+                            /// @src 38:210:221  "OnlyOwner()"
+                            mstore(_1, shl(224, 0x5fc483c5))
+                            revert(_1, /** @src 38:81:267  "contract CustomError {..." */ 4)
+                        }
+                        sstore(_2, or(and(_3, shl(160, 0xffffffffffffffffffffffff)), /** @src 38:182:192  "msg.sender" */ caller()))
+                        /// @src 38:81:267  "contract CustomError {..."
+                        return(mload(64), _2)
+                    }
+                }
+                revert(0, 0)
+            }
+        }
+        data ".metadata" hex"a164736f6c6343000810000a"
+    }
+}
+
+
+/// @use-src 38:"src/CustomErrors.sol"
+object "RequireError_33089" {
+    code {
+        {
+            /// @src 38:270:479  "contract RequireError {..."
+            let _1 := memoryguard(0x80)
+            mstore(64, _1)
+            if callvalue() { revert(0, 0) }
+            sstore(/** @src 38:314:324  "msg.sender" */ 0x00, /** @src 38:270:479  "contract RequireError {..." */ or(and(sload(/** @src 38:314:324  "msg.sender" */ 0x00), /** @src 38:270:479  "contract RequireError {..." */ not(sub(shl(160, 1), 1))), /** @src 38:314:324  "msg.sender" */ caller()))
+            /// @src 38:270:479  "contract RequireError {..."
+            let _2 := datasize("RequireError_33089_deployed")
+            codecopy(_1, dataoffset("RequireError_33089_deployed"), _2)
+            return(_1, _2)
+        }
+    }
+    /// @use-src 38:"src/CustomErrors.sol"
+    object "RequireError_33089_deployed" {
+        code {
+            {
+                /// @src 38:270:479  "contract RequireError {..."
+                let _1 := memoryguard(0x80)
+                mstore(64, _1)
+                if iszero(lt(calldatasize(), 4))
+                {
+                    let _2 := 0
+                    if eq(0x40caae06, shr(224, calldataload(_2)))
+                    {
+                        if callvalue() { revert(_2, _2) }
+                        if slt(add(calldatasize(), not(3)), _2) { revert(_2, _2) }
+                        let _3 := sload(_2)
+                        if iszero(/** @src 38:376:395  "msg.sender == owner" */ eq(/** @src 38:376:386  "msg.sender" */ caller(), /** @src 38:270:479  "contract RequireError {..." */ and(_3, sub(shl(160, 1), 1))))
+                        {
+                            mstore(_1, shl(229, 4594637))
+                            mstore(add(_1, 4), 32)
+                            mstore(add(_1, 36), 33)
+                            mstore(add(_1, 68), "Only owner can call this functio")
+                            mstore(add(_1, 100), "n")
+                            revert(_1, 132)
+                        }
+                        sstore(_2, or(and(_3, shl(160, 0xffffffffffffffffffffffff)), /** @src 38:376:386  "msg.sender" */ caller()))
+                        /// @src 38:270:479  "contract RequireError {..."
+                        return(mload(64), _2)
+                    }
+                }
+                revert(0, 0)
+            }
+        }
+        data ".metadata" hex"a164736f6c6343000810000a"
+    }
+}

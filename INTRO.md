@@ -1,3 +1,5 @@
+# Introduction
+
 ## What is gas?
 
 All programmable compution in Ethereum is subject to fees, which are paid in gas. The gas fees should encourage writing efficient code and discourage spamming activities.

@@ -18,8 +18,8 @@ We will use Foundry to look into certain code snippets in detail. Most gas optim
 Important commands we will use throughout this mentorship:
 
 - `forge test --mc <contract_name> -vvvv` // running tests, showing stack traces
-- `forge inspect src/Counter.sol:Counter ir-optimized` // show optimized yul
-- `forge inspect src/Counter.sol:Counter methods` // show function selectors
-- `forge debug --debug src/Counter.sol --sig "incrementUnchecked()"` // debug functions
+- `forge inspect <Contract> ir-optimized` // show optimized yul
+- `forge inspect <Contract> methods` // show function selectors
+- `forge debug --debug <Contract> --sig "incrementUnchecked()"` // debug functions
 
 Unless otherwise noted, the optimizer is enabled with with 200 runs.

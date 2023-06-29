@@ -1,0 +1,52 @@
+/// @use-src 41:"src/Increment.sol"
+object "Increment_33259" {
+    code {
+        {
+            /// @src 41:350:526  "contract Increment {..."
+            let _1 := memoryguard(0x80)
+            mstore(64, _1)
+            if callvalue() { revert(0, 0) }
+            let _2 := datasize("Increment_33259_deployed")
+            codecopy(_1, dataoffset("Increment_33259_deployed"), _2)
+            return(_1, _2)
+        }
+    }
+    /// @use-src 41:"src/Increment.sol"
+    object "Increment_33259_deployed" {
+        code {
+            {
+                /// @src 41:350:526  "contract Increment {..."
+                mstore(64, memoryguard(0x80))
+                if iszero(lt(calldatasize(), 4))
+                {
+                    let _1 := 0
+                    switch shr(224, calldataload(_1))
+                    case 0x016e4842 { // postIncrement()
+                        if callvalue() { revert(_1, _1) }
+                        if slt(add(calldatasize(), not(3)), _1) { revert(_1, _1) }
+                        sstore(_1, increment_uint256(sload(_1)))
+                        return(mload(64), _1)
+                    }
+                    case 0x5b59b0c8 { // preIncrement()
+                        if callvalue() { revert(_1, _1) }
+                        if slt(add(calldatasize(), not(3)), _1) { revert(_1, _1) }
+                        sstore(_1, increment_uint256(sload(_1)))
+                        return(mload(64), _1)
+                    }
+                }
+                revert(0, 0)
+            }
+            function increment_uint256(value) -> ret
+            {
+                if eq(value, not(0))
+                {
+                    mstore(0, shl(224, 0x4e487b71))
+                    mstore(4, 0x11)
+                    revert(0, 0x24)
+                }
+                ret := add(value, 1)
+            }
+        }
+        data ".metadata" hex"a164736f6c6343000810000a"
+    }
+}
