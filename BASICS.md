@@ -10,7 +10,7 @@ When the EVM executes a smart contract, it creates an execution context. It cont
 
 ### Basics
 
-The stack is a LIFO (last in, first out) data structure. It is used to store data and intermediate results during execution. The stack has a maximum size of 1024 elements, but only the first 16 elements are accessible -- if you try to access an element further down, you will be greeted with the infamous `Stack to deep` error. Each element on the stack has a size of 256 bits.
+The stack is a LIFO (last in, first out) data structure. It is used to store data and intermediate results during execution. The stack has a maximum size of 1024 elements, but only the first 16 elements are accessible -- if you try to access an element further down, you will be greeted with the infamous `Stack too deep` error. Each element on the stack has a size of 256 bits.
 
 ### Gas costs related to the stack
 
