@@ -23,31 +23,24 @@ Since storage operations are among the most expensive opcodes, there is also the
 
 - [Use unchecked{} when possible (e.g. loops)](#use-unchecked-when-possible-eg-loops)
 - [Pre-increment vs. post-increment](#pre-increment-vs-post-increment)
-- Consider code size difference between >=, >, <=, <, !=, ...
-- Bit shifting instead of mul/div
-- Short circuit by logic operators
-- addmod() and mulmod()
+- [Use < or > instead of <= or >=](#use--or--instead-of--or-)
+- [Short circuit when checking conditionals](#short-circuit-when-checking-conditionals)
+- [Bit shifting when multiplying/dividing by powers of 2](#bit-shifting-when-multiplyingdividing-by-powers-of-2)
+- [addmod() and mulmod()](#addmod-and-mulmod)
 
 ### Functions
 
-- [Calldata over memory for external functions](#calldata-over-memory-for-external-functions)
-- Seperate external calls in internal functions
-- seperate repeated operations as internal functions
-- internal function calls are cheaper than public calls
-- Limit modifiers
-- Function order matters
+- [Calldata instead of memory for external functions](#calldata-instead-of-memory-for-external-functions)
+- [Declare functions as payable](#declare-functions-as-payable)
+- [Function order matters](#function-order-matters)
+- [Limit modifiers](#limit-modifiers)
+- [Indexed events](#indexed-events)
 
-### Tricks
+### Other
 
-- Payable constructor (also valid for functions)
-- typing random things, IPFS swarm hash more zeros -> zero calldata is 4 gas instead of 16 nonzero
-- same with address with lots of leading zeros, since calldata cheaper
-- while instead of for loop even more efficient (rareskills: arraysort)
-- indexed events
-
-### L2 specific
-
-- Calldata compression
+- [Multicall for batch transactions](https://github.com/dragonfly-xyz/useful-solidity-patterns/tree/main/patterns/multicall)
+- [Off-chain storage](https://github.com/dragonfly-xyz/useful-solidity-patterns/tree/main/patterns/off-chain-storage)
+- [Big data storage (SSTORE2)](https://github.com/dragonfly-xyz/useful-solidity-patterns/tree/main/patterns/big-data-storage)
 
 ---
 
@@ -480,7 +473,7 @@ case 0x5b59b0c8 { // preIncrement()
 
 **[⬆ back to top](#optimizations)**
 
-## Calldata over memory for external functions
+## Calldata instead of memory for external functions
 
 Calldata is cheaper than memory. If the input argument does not need to be modified, consider using calldata in external functions:
 
@@ -564,7 +557,7 @@ We can also see that each 32-byte chunk (32 characters) of the revert string req
 
 ## Short revert strings
 
-Try to keep the length of your error strings below 32 characters, if you handle errors with the `require` statement. The reason is that each string takes up 32 bytes in the bytecode, and once you exceed 32 characters, another 32 bytes are reserved.
+Try to keep the length of your error strings below 32 characters, if you handle errors with the `require` statement to limit the usage of `mstore` opcodes. The shorter your revert strings, the cheaper the deployment costs as well.
 
 ```solidity
 // Deployment cost: 53416 gas
@@ -631,7 +624,9 @@ function lateRevert() public {
 
 ## Require chaining
 
-If you have multiple conditions that need to be checked, dont combine them with `&&` or `||`. Instead, use require chaining. However, keep in mind that if you use error strings the deployment costs will increase.
+If you have multiple conditions that need to be checked, it is recommended not to combine them using `&&` or `||`. Instead, use require chaining, where each condition is checked separately using multiple require statements.
+
+However, it is important to note that if you use error strings in your require statements, the deployment costs of the contract will increase.
 
 ```solidity
 // 2279 gas
@@ -650,5 +645,290 @@ function requireNotChained() public payable {
 ### forge commands
 
 - `forge test --mc RequireChainingTest -vvvv` - run gas tests
+
+**[⬆ back to top](#optimizations)**
+
+## Use < or > instead of <= or >=
+
+In Solidity, there is no specific opcode for expressions like `>=` or `<=`. If you use `>=` or `<=`, the compiler will generate an additional `iszero` opcode, which costs an extra 3 gas.
+
+To check if a value is greater or less than another value, it is recommended to use `<` or `>` operators instead, as they do not require the additional `iszero` opcode.
+
+```solidity
+// 267 gas
+function greater(uint256 a, uint256 b) external pure returns (bool) {
+    return a > b;
+}
+
+// 270 gas
+function greaterEqual(uint256 a, uint256 b) external pure returns (bool) {
+    return a >= b;
+}
+```
+
+If we inspect the Yul code, we can see the additional `isZero` instruction:
+
+```yul
+// Greater
+mstore(_1, gt(calldataload(4), calldataload(36)))
+
+// GreaterEqual
+mstore(_1, iszero(lt(calldataload(4), calldataload(36))))
+```
+
+### forge commands
+
+- `forge test --mc ComparisonTest -vvvv` - run gas tests
+- `forge inspect Comparison ir-optimized` - show optimized yul code
+
+**[⬆ back to top](#optimizations)**
+
+## Short circuit when checking conditionals
+
+When checking multiple conditions with the `&&` operator, place the condition which is most likely to fail first. This way, if the first condition fails, the second condition will not be checked.
+
+On the other hand, when using the `||` operator, it is recommended to place the condition that is most likely to succeed first. This way, if the first condition succeeds (evaluates to true), the second condition will not be evaluated, optimizing gas usage.
+
+## Bit shifting when multiplying/dividing by powers of 2
+
+If you need to divide or multiply a number by a power of two, you can optimize the operation by using bit shifting instead. Right shift (`>>`) is equivalent to division by 2, while left shift (`<<`) is equivalent to multiplication by 2.
+
+```solidity
+// 241 gas
+function divide(uint256 a) external pure returns (uint256) {
+    return a >> 2; // divide by 2^2 = 4
+}
+
+// 317 gas
+function divide(uint256 a) external pure returns (uint256) {
+    return a / 4;
+}
+```
+
+Note: This optimization is "optimized away" when the IR-based compiler (via_ir=true) is enabled. In this case, both functions are compiled to the same output and cost 153 gas.
+
+```yul
+if eq(0x3e823f79, shr(224, calldataload(0)))
+{
+    if callvalue() { revert(0, 0) }
+    if slt(add(calldatasize(), not(3)), 32) { revert(0, 0) }
+    mstore(_1, shr(0x02, calldataload(4)))
+    return(_1, 32)
+}
+```
+
+### forge commands
+
+- `forge test --mc BitShiftTest -vvvv` - run gas tests
+- `forge inspect BitShift ir-optimized` - show optimized yul code
+- `forge inspect NoBitShift ir-optimized` - show optimized yul code
+
+**[⬆ back to top](#optimizations)**
+
+## addmod() and mulmod()
+
+When performing modulo operations, use `addmod()` and `mulmod()`, which combine the arithmetic and modulo operation in a single step.
+
+```solidity
+// 274 gas
+function addMod(uint256 a) external pure returns (uint256) {
+    return addmod(a, 1, 2);
+}
+
+// 395 gas
+function addMod(uint256 a) external pure returns (uint256) {
+    return (a + 1) % 2;
+}
+
+// 296 gas
+function mulMod (uint256 a) external pure returns (uint256) {
+    return mulmod(a, 1, 2);
+}
+
+// 434 gas
+function mulMod (uint256 a) external pure returns (uint256) {
+    return (a * 1) % 2;
+}
+```
+
+Comparing the two `addMod` functions in Yul, it becomes apparent why using `addmod` or `mulmod` can be cheaper: Since `addmod` or `mulmod` is designed to handle overflow automatically, there is no need for an extra overflow check.
+
+```yul
+case 0xb1d818a1 { // addModBad
+    if callvalue() { revert(_2, _2) }
+    if slt(add(calldatasize(), not(3)), 32) { revert(_2, _2) }
+    let value := calldataload(4)
+    if gt(value, add(value, 1))
+    {
+        mstore(_2, shl(224, 0x4e487b71))
+        mstore(4, 0x11)
+        revert(_2, 0x24)
+    }
+    mstore(_1, addmod(value, 1, 0x02))
+    return(_1, 32)
+}
+
+case 0xb1d818a1 { // addModGood
+    if callvalue() { revert(_2, _2) }
+    if slt(add(calldatasize(), not(3)), 32) { revert(_2, _2) }
+    mstore(_1, addmod(calldataload(4), 1, 0x02))
+    return(_1, 32)
+}
+```
+
+### forge commands
+
+- `forge test --mc ModuloTest -vvvv` - run gas tests
+- `forge inspect ModuloGood ir-optimized` - show optimized yul code
+- `forge inspect ModuloBad ir-optimized` - show optimized yul code
+
+**[⬆ back to top](#optimizations)**
+
+## Declare functions as payable
+
+By default, functions in Solidity are non-payable, meaning they do not accept Ether payments. However, if you explicitly declare a function as payable, the compiler will omit the `msg.value == zero` check when calling that function. This optimization can result in gas savings since the check for zero value is not necessary.
+
+```solidity
+// Deployment cost: 9642 gas
+contract Payable {
+    constructor() payable {}
+
+    // 74 gas
+    function foo() external payable {}
+}
+
+// Deployment cost: 12066 gas
+contract NonPayable {
+    constructor() {}
+
+    // 98 gas
+    function bar() external {}
+}
+```
+
+Inspecting the Yul code [Payable.yulp](./src/ir-optimized/Payable.yulp), we can see that this line is removed
+
+```yul
+if callvalue() { revert(0, 0) }
+```
+
+It's important to note that declaring a function as payable should only be done when the function actually needs to receive Ether payments. Otherwise, it is recommended to keep the function as non-payable to ensure proper handling of Ether transactions and avoid unintended behaviors.
+
+### forge commands
+
+- `forge test --mc PayableTest -vvvv` - run gas tests
+- `forge inspect Payable ir-optimized` - show optimized yul code
+- `forge inspect NonPayable ir-optimized` - show optimized yul code
+
+**[⬆ back to top](#optimizations)**
+
+## Function order matters
+
+When calling a function, the EVM jumps through the list of function selectors until it finds a match. The function selectors are ordered in hexadecimal order and each jump costs 22 gas. If you have a lot of functions, you can save gas by ordering them in a way that the most commonly called functions are at the top.
+
+For example, consider the following contract:
+
+```solidity
+contract FunctionOrder {
+    function a() external pure{}
+
+    function b() external pure{}
+
+    function c() external pure{}
+
+    function d() external pure{}
+}
+```
+
+Displaying the function selectors with `forge inspect FunctionOrder methods` shows:
+
+```js
+{
+  "a()": "0dbe671f",
+  "b()": "4df7e3d0",
+  "c()": "c3da42b8",
+  "d()": "8a054ac2"
+}
+```
+
+Since the function selectors are ordered in hexadecimal order, the order of the functions is `a, b, d, c`. By inspecting the Yul code, we can confirm that this is the case:
+
+```yul
+{
+    switch shr(224, calldataload(0))
+    case 0x0dbe671f { external_fun_a() } // a
+    case 0x4df7e3d0 { external_fun_a() } // b
+    case 0x8a054ac2 { external_fun_a() } // d
+    case 0xc3da42b8 { external_fun_a() } // c
+}
+```
+
+### forge commands
+
+- `forge test --mc FunctionOrderTest -vvvv` - run gas tests
+- `forge inspect FunctionOrder methods` - show function selectors
+- `forge inspect FunctionOrder ir-optimized` - show optimized yul code
+
+**[⬆ back to top](#optimizations)**
+
+## Limit modifiers
+
+When you add a function modifier in Solidity, the code of the modified function is inserted into the modifier. If the same modifier is used multiple times, the code is duplicated, increasing the bytecode size. On the other hand, internal functions are called separately and save bytecode in deployment. Internal functions incur a slight runtime cost due to function calls. This means they are slightly more expensive in execution costs but save a lot of redundant bytecode in deployment.
+
+### References
+
+- https://github.com/OpenZeppelin/openzeppelin-contracts/pull/3223
+- https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol
+
+**[⬆ back to top](#optimizations)**
+
+## Indexed events
+
+You can include up to three (four for anonymous events) indexed parameters in an event in Solidity. These indexed parameters are stored in a special data structure called "topics" instead of the data part of the event log. The first topic of an event is always the event signature, unless the event is declared as anonymous.
+
+Using indexed parameters allows you to efficiently search for specific events when filtering a sequence of blocks. Each indexed parameter included in an event costs an additional 375 gas.
+
+```
+Gas costs of events:
+static_gas = 375
+dynamic_gas = 375 * topic_count + 8 * size + memory_expansion_cost
+```
+
+Depending on the type of parameter it is cheaper to not declare it as indexed. For example, string parameters are cheaper to declare as indexed because the cost of expanding memory for string storage is higher than the cost of adding a topic. On the other hand, for uint256 parameters, it is the opposite scenario, where it is more efficient to declare them as non-indexed. Adding a topic has a higher cost compared to directly storing the uint256 value in the data part of the event log.
+
+```solidity
+// 1740 gas
+function anonLog() public {
+    emit AnonymousLog(1, 2, 3);
+}
+
+// 1817 gas
+function logNum() public {
+    emit LogNum(1, 2, 3);
+}
+
+// 2121 gas
+function logNumIndexed() public {
+    emit LogNumIndexed(1, 2, 3);
+}
+
+// 2286 gas
+function logStringIndexed() public {
+    emit LogStringIndexed("Hello", "World", "!");
+}
+
+// 3463 gas
+function logString() public {
+    emit LogString("Hello", "World", "!");
+}
+```
+
+### forge commands
+
+- `forge test --mc EventsTest -vvvv` - run gas tests
+
+### References
+
+- https://docs.soliditylang.org/en/develop/abi-spec.html#abi-events
 
 **[⬆ back to top](#optimizations)**

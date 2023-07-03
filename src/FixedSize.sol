@@ -11,27 +11,27 @@ contract FixedSize {
     string myString;
 
     // 22260 gas
-    function setFixedArray() public {
+    function setFixedArray() external {
         fixedArray[0] = 1;
     }
 
     // 44440 gas
-    function setDynamicArray() public {
+    function setDynamicArray() external {
         dynamicArray.push(1);
     }
 
     // 22244 gas
-    function setFixedBytes() public {
+    function setFixedBytes() external {
         fixedBytes = "test test test test test";
     }
 
     // 22748 gas
-    function setDynamicBytes() public {
+    function setDynamicBytes() external {
         dynamicBytes = "test test test test test";
     }
 
     // 22682 gas
-    function setString() public {
+    function setString() external {
         myString = "test test test test test";
     }
 }

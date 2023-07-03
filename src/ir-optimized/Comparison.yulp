@@ -1,0 +1,77 @@
+/// @use-src 17:"src/Comparison.sol"
+object "Comparison_29434" {
+    code {
+        {
+            let _1 := memoryguard(0x80)
+            mstore(64, _1)
+            if callvalue() { revert(0, 0) }
+            let _2 := datasize("Comparison_29434_deployed")
+            codecopy(_1, dataoffset("Comparison_29434_deployed"), _2)
+            return(_1, _2)
+        }
+    }
+    /// @use-src 17:"src/Comparison.sol"
+    object "Comparison_29434_deployed" {
+        code {
+            {
+                let _1 := memoryguard(0x80)
+                let _2 := 64
+                mstore(_2, _1)
+                if iszero(lt(calldatasize(), 4))
+                {
+                    let _3 := 0
+                    switch shr(224, calldataload(_3))
+                    case 0x2d738965 { // less
+                        if callvalue() { revert(_3, _3) }
+                        let param, param_1 := abi_decode_uint256t_uint256(calldatasize())
+                        mstore(_1, /** @src 17:467:472  "a < b" */ lt(param, param_1))
+                        return(_1, 32)
+                    }
+                    case 0x30191626 { // equal
+                        if callvalue() { revert(_3, _3) }
+                        let param_2, param_3 := abi_decode_uint256t_uint256(calldatasize())
+                        let memPos := mload(_2)
+                        mstore(memPos, /** @src 17:746:752  "a == b" */ eq(param_2, param_3))
+                        return(memPos, 32)
+                    }
+                    case 0x71343515 { // greater
+                        if callvalue() { revert(_3, _3) }
+                        let param_4, param_5 := abi_decode_uint256t_uint256(calldatasize())
+                        let memPos_1 := mload(_2)
+                        mstore(memPos_1, /** @src 17:184:189  "a > b" */ gt(param_4, param_5))
+                        return(memPos_1, 32)
+                    }
+                    case 0x82a1f94b { // greaterEqual
+                        if callvalue() { revert(_3, _3) }
+                        let param_6, param_7 := abi_decode_uint256t_uint256(calldatasize())
+                        let memPos_2 := mload(_2)
+                        mstore(memPos_2, /** @src 17:333:339  "a >= b" */ iszero(lt(param_6, param_7)))
+                        return(memPos_2, 32)
+                    }
+                    case 0xca4e89bf { // notEqual
+                        if callvalue() { revert(_3, _3) }
+                        let param_8, param_9 := abi_decode_uint256t_uint256(calldatasize())
+                        let memPos_3 := mload(_2)
+                        mstore(memPos_3, /** @src 17:888:894  "a != b" */ iszero(eq(param_8, param_9)))
+                        return(memPos_3, 32)
+                    }
+                    case 0xe138f9ba { // lessEqual
+                        if callvalue() { revert(_3, _3) }
+                        let param_10, param_11 := abi_decode_uint256t_uint256(calldatasize())
+                        let memPos_4 := mload(_2)
+                        mstore(memPos_4, /** @src 17:610:616  "a <= b" */ iszero(gt(param_10, param_11)))
+                        return(memPos_4, 32)
+                    }
+                }
+                revert(0, 0)
+            }
+            function abi_decode_uint256t_uint256(dataEnd) -> value0, value1
+            {
+                if slt(add(dataEnd, not(3)), 64) { revert(0, 0) }
+                value0 := calldataload(4)
+                value1 := calldataload(36)
+            }
+        }
+        data ".metadata" hex"a164736f6c6343000810000a"
+    }
+}

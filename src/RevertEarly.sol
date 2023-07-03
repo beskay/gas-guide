@@ -1,9 +1,9 @@
-// SPDX-License-Identifier: GPL-3.0
-pragma solidity ^0.8.4;
+// SPDX-License-Identifier: MIT
+pragma solidity 0.8.16;
 
 contract RevertEarly {
     // 225 gas
-    function earlyRevert() public pure {
+    function earlyRevert() external pure {
         require(false, "Early revert");
         
         for (uint i = 0; i < 1000; i++) {
@@ -13,7 +13,7 @@ contract RevertEarly {
 
 
     // 111290 gas
-    function lateRevert() public pure {
+    function lateRevert() external pure {
         for (uint i = 0; i < 1000; i++) {
             // do nothing
         }

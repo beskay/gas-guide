@@ -1,0 +1,39 @@
+/// @use-src 44:"src/FunctionOrder.sol"
+object "FunctionOrder_33364" {
+    code {
+        {
+            /// @src 44:57:218  "contract FunctionOrder {..."
+            let _1 := memoryguard(0x80)
+            mstore(64, _1)
+            if callvalue() { revert(0, 0) }
+            let _2 := datasize("FunctionOrder_33364_deployed")
+            codecopy(_1, dataoffset("FunctionOrder_33364_deployed"), _2)
+            return(_1, _2)
+        }
+    }
+    /// @use-src 44:"src/FunctionOrder.sol"
+    object "FunctionOrder_33364_deployed" {
+        code {
+            {
+                /// @src 44:57:218  "contract FunctionOrder {..."
+                mstore(64, memoryguard(0x80))
+                if iszero(lt(calldatasize(), 4))
+                {
+                    switch shr(224, calldataload(0))
+                    case 0x0dbe671f { external_fun_a() }
+                    case 0x4df7e3d0 { external_fun_a() }
+                    case 0x8a054ac2 { external_fun_a() }
+                    case 0xc3da42b8 { external_fun_a() }
+                }
+                revert(0, 0)
+            }
+            function external_fun_a()
+            {
+                if callvalue() { revert(0, 0) }
+                if slt(add(calldatasize(), not(3)), 0) { revert(0, 0) }
+                return(mload(64), 0)
+            }
+        }
+        data ".metadata" hex"a164736f6c6343000810000a"
+    }
+}

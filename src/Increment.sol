@@ -6,7 +6,7 @@ contract PostIncrement {
 
     // 22308 gas (with the old codegen)
     // 22245 gas (--via-ir enabled)
-    function postIncrement() public {
+    function postIncrement() external {
         number++;
     }
 }
@@ -16,7 +16,7 @@ contract PreIncrement {
 
     // 22303 gas (with the old codegen)
     // 22245 gas (--via-ir enabled)
-    function preIncrement() public {
+    function preIncrement() external {
         ++number;
     }
 }
@@ -25,11 +25,11 @@ contract PreIncrement {
 contract Increment {
     uint256 internal number;
 
-    function postIncrement() public {
+    function postIncrement() external {
         number++;
     }
 
-    function preIncrement() public {
+    function preIncrement() external {
         ++number;
     }
 }

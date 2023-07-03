@@ -1,0 +1,104 @@
+/// @use-src 45:"src/Modulo.sol"
+object "ModuloGood_33415" {
+    code {
+        {
+            /// @src 45:57:318  "contract ModuloGood {..."
+            let _1 := memoryguard(0x80)
+            mstore(64, _1)
+            if callvalue() { revert(0, 0) }
+            let _2 := datasize("ModuloGood_33415_deployed")
+            codecopy(_1, dataoffset("ModuloGood_33415_deployed"), _2)
+            return(_1, _2)
+        }
+    }
+    /// @use-src 45:"src/Modulo.sol"
+    object "ModuloGood_33415_deployed" {
+        code {
+            {
+                /// @src 45:57:318  "contract ModuloGood {..."
+                let _1 := memoryguard(0x80)
+                mstore(64, _1)
+                if iszero(lt(calldatasize(), 4))
+                {
+                    let _2 := 0
+                    switch shr(224, calldataload(_2))
+                    case 0xb1d818a1 { // addmod
+                        if callvalue() { revert(_2, _2) }
+                        if slt(add(calldatasize(), not(3)), 32) { revert(_2, _2) }
+                        mstore(_1, addmod(calldataload(4), 1, 0x02))
+                        return(_1, 32)
+                    }
+                    case 0xd3f56ef9 { // mulmod
+                        if callvalue() { revert(_2, _2) }
+                        if slt(add(calldatasize(), not(3)), 32) { revert(_2, _2) }
+                        let memPos := mload(64)
+                        mstore(memPos, mulmod(calldataload(4), 1, 0x02))
+                        return(memPos, 32)
+                    }
+                }
+                revert(0, 0)
+            }
+        }
+        data ".metadata" hex"a164736f6c6343000810000a"
+    }
+}
+
+
+/// @use-src 45:"src/Modulo.sol"
+object "ModuloBad_33446" {
+    code {
+        {
+            /// @src 45:320:572  "contract ModuloBad {..."
+            let _1 := memoryguard(0x80)
+            mstore(64, _1)
+            if callvalue() { revert(0, 0) }
+            let _2 := datasize("ModuloBad_33446_deployed")
+            codecopy(_1, dataoffset("ModuloBad_33446_deployed"), _2)
+            return(_1, _2)
+        }
+    }
+    /// @use-src 45:"src/Modulo.sol"
+    object "ModuloBad_33446_deployed" {
+        code {
+            {
+                /// @src 45:320:572  "contract ModuloBad {..."
+                let _1 := memoryguard(0x80)
+                mstore(64, _1)
+                if iszero(lt(calldatasize(), 4))
+                {
+                    let _2 := 0
+                    switch shr(224, calldataload(_2))
+                    case 0xb1d818a1 { // addmod
+                        if callvalue() { revert(_2, _2) }
+                        if slt(add(calldatasize(), not(3)), 32) { revert(_2, _2) }
+                        let value := calldataload(4)
+                        if gt(value, add(value, 1))
+                        {
+                            mstore(_2, shl(224, 0x4e487b71))
+                            mstore(4, 0x11)
+                            revert(_2, 0x24)
+                        }
+                        mstore(_1, addmod(value, 1, 0x02))
+                        return(_1, 32)
+                    }
+                    case 0xd3f56ef9 { // mulmod
+                        if callvalue() { revert(_2, _2) }
+                        if slt(add(calldatasize(), not(3)), 32) { revert(_2, _2) }
+                        let value_1 := calldataload(4)
+                        if and(iszero(iszero(value_1)), gt(1, div(not(0), value_1)))
+                        {
+                            mstore(_2, shl(224, 0x4e487b71))
+                            mstore(4, 0x11)
+                            revert(_2, 0x24)
+                        }
+                        let memPos := mload(64)
+                        mstore(memPos, and(value_1, 1))
+                        return(memPos, 32)
+                    }
+                }
+                revert(0, 0)
+            }
+        }
+        data ".metadata" hex"a164736f6c6343000810000a"
+    }
+}

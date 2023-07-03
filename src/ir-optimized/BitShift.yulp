@@ -1,0 +1,74 @@
+/// @use-src 35:"src/BitShift.sol"
+object "BitShift_32989" {
+    code {
+        {
+            /// @src 35:57:211  "contract BitShift {..."
+            let _1 := memoryguard(0x80)
+            mstore(64, _1)
+            if callvalue() { revert(0, 0) }
+            let _2 := datasize("BitShift_32989_deployed")
+            codecopy(_1, dataoffset("BitShift_32989_deployed"), _2)
+            return(_1, _2)
+        }
+    }
+    /// @use-src 35:"src/BitShift.sol"
+    object "BitShift_32989_deployed" {
+        code {
+            {
+                /// @src 35:57:211  "contract BitShift {..."
+                let _1 := memoryguard(0x80)
+                mstore(64, _1)
+                if iszero(lt(calldatasize(), 4))
+                {
+                    if eq(0x3e823f79, shr(224, calldataload(0)))
+                    {
+                        if callvalue() { revert(0, 0) }
+                        if slt(add(calldatasize(), not(3)), 32) { revert(0, 0) }
+                        mstore(_1, shr(0x02, calldataload(4)))
+                        return(_1, 32)
+                    }
+                }
+                revert(0, 0)
+            }
+        }
+        data ".metadata" hex"a164736f6c6343000810000a"
+    }
+}
+
+
+/// @use-src 35:"src/BitShift.sol"
+object "NoBitShift_33002" {
+    code {
+        {
+            /// @src 35:213:347  "contract NoBitShift {..."
+            let _1 := memoryguard(0x80)
+            mstore(64, _1)
+            if callvalue() { revert(0, 0) }
+            let _2 := datasize("NoBitShift_33002_deployed")
+            codecopy(_1, dataoffset("NoBitShift_33002_deployed"), _2)
+            return(_1, _2)
+        }
+    }
+    /// @use-src 35:"src/BitShift.sol"
+    object "NoBitShift_33002_deployed" {
+        code {
+            {
+                /// @src 35:213:347  "contract NoBitShift {..."
+                let _1 := memoryguard(0x80)
+                mstore(64, _1)
+                if iszero(lt(calldatasize(), 4))
+                {
+                    if eq(0x3e823f79, shr(224, calldataload(0)))
+                    {
+                        if callvalue() { revert(0, 0) }
+                        if slt(add(calldatasize(), not(3)), 32) { revert(0, 0) }
+                        mstore(_1, shr(2, calldataload(4)))
+                        return(_1, 32)
+                    }
+                }
+                revert(0, 0)
+            }
+        }
+        data ".metadata" hex"a164736f6c6343000810000a"
+    }
+}
