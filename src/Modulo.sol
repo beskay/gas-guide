@@ -8,7 +8,7 @@ contract ModuloGood {
     }
 
     // 296 gas
-    function mulMod (uint256 a) external pure returns (uint256) {
+    function mulMod(uint256 a) external pure returns (uint256) {
         return mulmod(a, 1, 2);
     }
 }
@@ -20,7 +20,7 @@ contract ModuloBad {
     }
 
     // 434 gas
-    function mulMod (uint256 a) external pure returns (uint256) {
+    function mulMod(uint256 a) external pure returns (uint256) {
         return (a * 1) % 2;
     }
 }

@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-
 /*
 Generated with slither src/StoragePacking.sol --print variable-order
 +----------------------+-----------------------------+------+--------+
@@ -28,16 +27,23 @@ contract StorageLayout {
     uint128[2] c; // slot 3
 
     bool d; // slot 4
-    address e; // slot 4, offset 1 byte (size of bool is 1 byte) 
+    address e; // slot 4, offset 1 byte (size of bool is 1 byte)
 
     // enums are uint8 by default
-    enum ActionChoices { GoLeft, GoRight, GoStraight, SitStill }
+    enum ActionChoices {
+        GoLeft,
+        GoRight,
+        GoStraight,
+        SitStill
+    }
+
     ActionChoices choice; // slot 4, offset 21 byte (1 byte for bool + 20 bytes for address)
 
     struct Entry {
         uint128 id;
         uint128 value;
     }
+
     Entry f; // slot 5
     Entry[] g; // slot 6 for length, keccak256(6)+ for data
 

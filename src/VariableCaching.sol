@@ -6,7 +6,7 @@ contract VariableCaching {
     uint256 sum;
 
     // 45495 gas
-    function sumArrayOptimized() external  {
+    function sumArrayOptimized() external {
         uint256 length = myArray.length; // SLOAD
         uint256 localSum;
 
@@ -19,7 +19,8 @@ contract VariableCaching {
 
     // 47506 gas
     function sumArray() external {
-        for (uint256 i = 0; i < myArray.length; i++) { // SLOAD
+        for (uint256 i = 0; i < myArray.length; i++) {
+            // SLOAD
             sum += myArray[i]; // SSTORE + 2x SLOAD
         }
     }

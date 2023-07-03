@@ -8,7 +8,7 @@ contract RevertShort {
     // 2363 gas
     function setOwner() external {
         require(msg.sender == owner, "!owner");
-        
+
         owner = msg.sender;
     }
 }
@@ -20,7 +20,7 @@ contract RevertLong {
     // 2381 gas
     function setOwner() external {
         require(msg.sender == owner, "Only the contract owner can call this function!");
-        
+
         owner = msg.sender;
     }
 }

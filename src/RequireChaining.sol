@@ -11,10 +11,8 @@ contract RequireChaining {
         require(block.timestamp < 1000_000);
     }
 
-
     // 2317 gas
     function requireNotChained() external payable {
         require(msg.sender == owner && msg.value == 0 && block.timestamp < 1000_000);
     }
 }
-

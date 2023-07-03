@@ -16,4 +16,3 @@ contract NonPayable {
     // 98 gas
     function bar() external {}
 }
-

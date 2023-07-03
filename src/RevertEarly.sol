@@ -5,19 +5,17 @@ contract RevertEarly {
     // 225 gas
     function earlyRevert() external pure {
         require(false, "Early revert");
-        
-        for (uint i = 0; i < 1000; i++) {
+
+        for (uint256 i = 0; i < 1000; i++) {
             // do nothing
         }
     }
 
-
     // 111290 gas
     function lateRevert() external pure {
-        for (uint i = 0; i < 1000; i++) {
+        for (uint256 i = 0; i < 1000; i++) {
             // do nothing
         }
         require(false, "Late revert");
     }
 }
-

@@ -10,7 +10,7 @@ contract CustomError {
     // 2303 gas
     function setOwner() public {
         if (msg.sender != owner) revert OnlyOwner();
-        
+
         owner = msg.sender;
     }
 }
@@ -22,7 +22,7 @@ contract RequireError {
     // 2381 gas
     function setOwner() public {
         require(msg.sender == owner, "Only owner can call this function");
-        
+
         owner = msg.sender;
     }
 }

@@ -5,10 +5,10 @@ contract Constant {
     // size(address) = 20 bytes, but 32 bytes are reserverd for immutable variables
     // compiler will replace `a` with `PUSH32(address)`
     address immutable a;
-    
+
     // 4 bytes, will be replaced with `PUSH4(0xaabbccdd)`
     bytes32 constant b = bytes32(hex"AABBCCDD");
-    
+
     uint256 c;
 
     string constant d = "test";
@@ -22,7 +22,7 @@ contract Constant {
     function readConstant() public pure returns (bytes32) {
         return b;
     }
-    
+
     // 195 gas
     function readImmutable() public view returns (address) {
         return a;

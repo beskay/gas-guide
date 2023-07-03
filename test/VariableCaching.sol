@@ -11,7 +11,7 @@ contract VariableCachingTest is Test {
         instance = new VariableCaching();
     }
 
-   function testSumArrayOptimized() public  {
+    function testSumArrayOptimized() public {
         instance.sumArrayOptimized();
     }
 

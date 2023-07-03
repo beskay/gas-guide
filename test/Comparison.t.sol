@@ -12,7 +12,6 @@ contract ComparisonTest is Test {
     Equal public equal;
     NotEqual public notEqual;
 
-
     function setUp() public {
         greater = new Greater();
         greaterEqual = new GreaterEqual();

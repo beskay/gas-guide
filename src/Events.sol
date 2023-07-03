@@ -9,9 +9,9 @@ contract Events {
     event LogNumIndexed(uint256 indexed num1, uint256 indexed num2, uint256 indexed num3);
     event LogNum(uint256 num1, uint256 num2, uint256 num3);
 
-    // anonymous events 
+    // anonymous events
     event AnonymousLog(uint256 num1, uint256 num2, uint256 num3);
-    
+
     // 1740 gas
     function anonLog() public {
         emit AnonymousLog(1, 2, 3);
