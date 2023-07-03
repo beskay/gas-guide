@@ -689,6 +689,8 @@ When checking multiple conditions with the `&&` operator, place the condition wh
 
 On the other hand, when using the `||` operator, it is recommended to place the condition that is most likely to succeed first. This way, if the first condition succeeds (evaluates to true), the second condition will not be evaluated, optimizing gas usage.
 
+**[⬆ back to top](#optimizations)**
+
 ## Bit shifting when multiplying/dividing by powers of 2
 
 If you need to divide or multiply a number by a power of two, you can optimize the operation by using bit shifting instead. Right shift (`>>`) is equivalent to division by 2, while left shift (`<<`) is equivalent to multiplication by 2.
