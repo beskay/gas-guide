@@ -68,7 +68,7 @@ contract DefaultVars {
 }
 ```
 
-Deploying the example contract with initialized default variables costs an additional ~6.6k gas, compared to the optimized version. If we take a look at the compiler generated Yul (`forge insect DefaultVars ir-optimized`), we see why:
+Deploying the example contract with initialized default variables costs an additional ~6.6k gas, compared to the optimized version. If we take a look at the compiler generated Yul (`forge inspect DefaultVars ir-optimized`), we see why:
 
 ```yul
 /// @src 23:193:349  "contract DefaultVars {..."
