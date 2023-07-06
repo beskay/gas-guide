@@ -116,7 +116,7 @@ function writeStruct() external {
 }
 ```
 
-Below is the optimized Yul code for function `writeStruct` in [StoragePacking.sol](./contracts/StoragePacking.sol). The compiler places the two uint128 variables in the same storage slot, so only a single SSTORE operation is needed. `id` (0x01) is stored in the lower 128 bits of the storage slot (right-aligned), and `value` (0x02) is stored in the upper 128 bits of the storage slot (left-aligned).
+Below is the optimized Yul code for function `writeStruct` in [StoragePacking.sol](./src/StoragePacking.sol). The compiler places the two uint128 variables in the same storage slot, so only a single SSTORE operation is needed. `id` (0x01) is stored in the lower 128 bits of the storage slot (right-aligned), and `value` (0x02) is stored in the upper 128 bits of the storage slot (left-aligned).
 
 ```yul
 case 0x33fe0dda { // writeStruct()
