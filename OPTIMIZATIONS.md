@@ -899,7 +899,7 @@ dynamic_gas = 375 * topic_count + 8 * size + memory_expansion_cost
 Depending on the type of parameter it is cheaper to not declare it as indexed. For example, string parameters are cheaper to declare as indexed because the cost of expanding memory for string storage is higher than the cost of adding a topic. On the other hand, for uint256 parameters, it is the opposite scenario, where it is more efficient to declare them as non-indexed. Adding a topic has a higher cost compared to directly storing the uint256 value in the data part of the event log.
 
 ```solidity
-// 1740 gas
+// 1352 gas
 function anonLog() public {
     emit AnonymousLog(1, 2, 3);
 }
