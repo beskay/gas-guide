@@ -22,7 +22,7 @@ contract OpenMint is ERC721URIStorage, ERC721Enumerable, AccessControl, Reentran
     mapping(address => bool) private addressesMinted;
     string private unrevealedURI = "Qmc7c9tNVaaAbTM5RMgdPY7MjPoLDFfPw8BAv3WuBUrebe";
     string private _contractURI = "https://summon.mypinata.cloud/ipfs/QmPkeXk49oqBYckGeM5mzwNztVDGcsnCB7RwbCPKo5racj";
-    mapping (address => bool) public whitelistSigners;
+    mapping(address => bool) public whitelistSigners;
     bool public freeMintPaused = false;
     bool public freeQRMintPaused = false;
 
@@ -141,16 +141,15 @@ contract OpenMint is ERC721URIStorage, ERC721Enumerable, AccessControl, Reentran
         emit NFTRevealed(tokenId);
     }
 
-    function tokenURI(uint256 tokenId)
-    public
-    view
-    override(ERC721, ERC721URIStorage)
-    returns (string memory)
-    {
+    function tokenURI(uint256 tokenId) public view override(ERC721, ERC721URIStorage) returns (string memory) {
         return super.tokenURI(tokenId);
     }
 
-    function batchSetTokenURI(uint256[] memory tokenIds, string[] memory tokenURIs) public onlyRole(DEFAULT_ADMIN_ROLE) noLocked {
+    function batchSetTokenURI(uint256[] memory tokenIds, string[] memory tokenURIs)
+        public
+        onlyRole(DEFAULT_ADMIN_ROLE)
+        noLocked
+    {
         require(tokenIds.length == tokenURIs.length, "OpenMintZk: tokenIds and URIs length mismatch");
         for (uint256 i = 0; i < tokenIds.length; i++) {
             require(_exists(tokenIds[i]), "OpenMintZk: URI set of nonexistent token");
@@ -158,12 +157,10 @@ contract OpenMint is ERC721URIStorage, ERC721Enumerable, AccessControl, Reentran
         }
     }
 
-    function _beforeTokenTransfer(
-        address from,
-        address to,
-        uint256 tokenId,
-        uint256 batch
-    ) internal override(ERC721, ERC721Enumerable) {
+    function _beforeTokenTransfer(address from, address to, uint256 tokenId, uint256 batch)
+        internal
+        override(ERC721, ERC721Enumerable)
+    {
         super._beforeTokenTransfer(from, to, tokenId, batch);
     }
 
@@ -191,7 +188,12 @@ contract OpenMint is ERC721URIStorage, ERC721Enumerable, AccessControl, Reentran
         emit ContractUnlocked(LOCKED_CONTRACT);
     }
 
-    function supportsInterface(bytes4 interfaceId) public view override(ERC721URIStorage, ERC721Enumerable, AccessControl) returns (bool) {
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        override(ERC721URIStorage, ERC721Enumerable, AccessControl)
+        returns (bool)
+    {
         return super.supportsInterface(interfaceId);
     }
 }

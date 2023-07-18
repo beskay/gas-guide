@@ -4,13 +4,13 @@ pragma solidity 0.8.16;
 contract Events {
     // Event declaration
     // Indexed parameters helps you filter the logs by the indexed parameter
-    event LogStringIndexed(string indexed message1, string indexed message2, string indexed message3);
-    event LogString(string message1, string message2, string message3);
-    event LogNumIndexed(uint256 indexed num1, uint256 indexed num2, uint256 indexed num3);
-    event LogNum(uint256 num1, uint256 num2, uint256 num3);
+    event LogStringIndexed(string indexed, string indexed, string indexed);
+    event LogString(string, string, string);
+    event LogNumIndexed(uint256 indexed, uint256 indexed, uint256 indexed);
+    event LogNum(uint256, uint256, uint256);
 
     // anonymous events
-    event AnonymousLog(uint256 num1, uint256 num2, uint256 num3) anonymous;
+    event AnonymousLog(uint256, uint256, uint256) anonymous;
 
     // 1352 gas
     function anonLog() public {

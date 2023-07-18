@@ -15,10 +15,3 @@ docs/
 
 # Optimized contracts
 /src/practice/optimized/
-
-# other
-src/examples
-src/practice
-README_WIP.md
-OPTIMIZATIONS_WIP.md
-test/practice
