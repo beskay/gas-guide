@@ -13,12 +13,12 @@ This mentorship is aimed at developers who are already familiar with Solidity an
 - [Gas optimization techniques](OPTIMIZATIONS.md)
   - Extensive collection of gas optimization techniques
 
-We will use Foundry to look into certain code snippets in detail. Most gas optimization examples have a corresponding source and test file to debug/inspect in detail.
+We will use Foundry to look into certain code snippets in detail. Most gas optimization examples have a corresponding source and test file to debug/inspect further.
 
 Important commands we will use throughout this mentorship:
 
 - `forge test --mc <contract_name> -vvvv` // running tests, showing stack traces
-- `forge inspect <Contract> ir-optimized` // show optimized yul
+- `forge inspect <Contract> ir-optimized` // show optimized Yul
 - `forge inspect <Contract> methods` // show function selectors
 - `forge debug --debug <Contract> --sig "incrementUnchecked()"` // debug functions
 
@@ -33,7 +33,7 @@ Practice by completing the challenges in [`./src/practice/`](./src/practice/). T
 3. [BadERC20](./src/practice/BadERC20.sol)
 4. [BadERC721](./src/practice/BadERC721.sol)
 
-`ArraySum` is an example contract where you can apply various gas optimization patterns. The required gas goal is achieveable by just using the techniques described in the [Gas optimization techniques](OPTIMIZATIONS.md) section.
+`ArraySum` is an example contract where you can apply various gas optimization patterns. The required gas goal is achieveable by just using the patterns described in the [Gas optimization techniques](OPTIMIZATIONS.md) section.
 
 `Airdrop`, `BadERC20` and `BadERC721` are inefficient contracts that have been deployed onchain. Note: `Airdrop` is just inefficient, but the code quality itself is good. However, the quality of `BadERC721` and especially `BadERC20` can be improved. Try to improve them as much as you can. You can use the following test cases to track your progress:
 

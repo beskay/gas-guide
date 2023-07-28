@@ -6,7 +6,6 @@ Since storage operations are among the most expensive opcodes, there is also the
 
 - [Dont initialize default variables](#dont-initialize-default-variables)
 - [Storage packing](#storage-packing)
-- [Reduced-size types](#reduced-size-types)
 - [Use constant and immutable state vars](#use-constant-and-immutable-state-vars)
 - [Cache storage variables](#cache-storage-variables)
 - [Fixed size variables are cheaper than dynamic size variables](#fixed-size-variables-are-cheaper-than-dynamic-size-variables)
@@ -21,7 +20,7 @@ Since storage operations are among the most expensive opcodes, there is also the
 
 ### Math
 
-- [Use unchecked{} when possible (e.g. loops)](#use-unchecked-when-possible-eg-loops)
+- [Use unchecked{} when possible (e.g. in loops)](#use-unchecked-when-possible-eg-in-loops)
 - [Pre-increment vs. post-increment](#pre-increment-vs-post-increment)
 - [Use < or > instead of <= or >=](#use--or--instead-of--or-)
 - [Short circuit when checking conditionals](#short-circuit-when-checking-conditionals)
@@ -75,17 +74,15 @@ Deploying the example contract with initialized default variables costs an addit
 let _1 := memoryguard(0x80)
 mstore(64, _1)
 if callvalue() { revert(0, 0) }
-sstore(/** @src 23:241:242  "0" */ 0x00, 0x00)
-/// @src 23:193:349  "contract DefaultVars {..."
-sstore(/** @src 23:266:271  "false" */ 0x01, /** @src 23:193:349  "contract DefaultVars {..." */ and(sload(/** @src 23:266:271  "false" */ 0x01), /** @src 23:193:349  "contract DefaultVars {..." */ not(sub(shl(168, 1), 1))))
-sstore(/** @src 23:335:346  "bytes32(\"\")" */ 0x02, /** @src 23:241:242  "0" */ 0x00)
-/// @src 23:193:349  "contract DefaultVars {..."
+sstore(0x00, 0x00)
+sstore(0x01, and(sload(0x01), not(sub(shl(168, 1), 1))))
+sstore(0x02, 0x00)
 let _2 := datasize("DefaultVars_29531_deployed")
 codecopy(_1, dataoffset("DefaultVars_29531_deployed"), _2)
 return(_1, _2)
 ```
 
-There are three SSTORE instructions, each costing 2.2k gas (see `testZeroToZero()` in [StorageTest](./test/basics/Storage.t.sol) for more information).
+There are three additional SSTORE instructions, each costing 2.2k gas (see `testZeroToZero()` in [StorageTest](./test/basics/Storage.t.sol) for more information).
 
 Why are there only three sstore instructions, when we have 4 vars in total? The answer is variable packing. The compiler places the bool and the address in the same storage slot since they both fit into 32 bytes. Therefore, only a single SSTORE operation is necessary -> [Storage packing](#storage-packing).
 
@@ -116,34 +113,18 @@ function writeStruct() external {
 }
 ```
 
-Below is the optimized Yul code for function `writeStruct` in [StoragePacking.sol](./src/StoragePacking.sol). The compiler places the two uint128 variables in the same storage slot, so only a single SSTORE operation is needed. `id` (0x01) is stored in the lower 128 bits of the storage slot (right-aligned), and `value` (0x02) is stored in the upper 128 bits of the storage slot (left-aligned).
+Below is the Yul representation for function `writeStruct` in [StoragePacking.sol](./src/StoragePacking.sol). The compiler places the two uint128 variables in the same storage slot, so only a single SSTORE operation is needed. `id` (0x01) is stored in the lower 128 bits of the storage slot (right-aligned), and `value` (0x02) is stored in the upper 128 bits of the storage slot (left-aligned).
 
 ```yul
 case 0x33fe0dda { // writeStruct()
-    if callvalue() { revert(_2, _2) }
-    if slt(add(calldatasize(), not(3)), _2) { revert(_2, _2) }
-    /// @src 38:1033:1044  "Entry(1, 2)"
-    let expr_mpos := /** @src 38:492:1251  "contract StoragePacking is StorageLayout {..." */ allocate_memory()
-    mstore(expr_mpos, /** @src 38:1039:1040  "1" */ 0x01)
-    mstore(/** @src 38:1033:1044  "Entry(1, 2)" */ add(expr_mpos, 32), /** @src 38:1042:1043  "2" */ 0x02)
+    // --snip--
     // store Entry(1, 2);
     sstore(4, 0x0200000000000000000000000000000001)
     return(mload(64), _2)
 }
 ```
 
-### forge commands
-
-- `forge test --mc StoragePackingTest -vvvv` - run gas tests
-- `forge inspect StoragePackingTest ir-optimized` - show optimized yul code
-
-### References
-
-- https://github.com/dragonfly-xyz/useful-solidity-patterns/tree/main/patterns/packing-storage
-
-**[⬆ back to top](#optimizations)**
-
-## Reduced-size types
+### Warning: Reduced-size types
 
 While storage packing usually saves gas, it is important to note that it can also increase gas usage. This is because the EVM operates on 32 bytes at a time. Therefore, if the element is smaller than that, the EVM must use more operations in order to reduce the size of the element from 32 bytes to the desired size. For example, see functions `writeUint128` and `writeUint256` in [StoragePacking.sol](./contracts/StoragePacking.sol).
 
@@ -161,15 +142,12 @@ function writeUint128() external {
 }
 ```
 
-Executing writeUint128 costs 22,557 gas, while executing writeUint256 costs 22,306 gas. By examining the output of `forge inspect StoragePacking ir-optimized`, we can observe that the compiler performs additional bit operations to reduce the size of the uint256 variable to 128 bits.
+Executing `writeUint128` costs 22,557 gas, while executing `writeUint256` costs 22,306 gas. By examining the output of `forge inspect StoragePacking ir-optimized`, we can observe that the compiler performs additional bit operations to reduce the size of the uint256 variable to 128 bits.
 
 ```yul
 case 0x102f49a5 { // writeUint256()
-    if callvalue() { revert(_2, _2) } // revert if called with value since function is nonpayable
-    if slt(add(calldatasize(), not(3)), _2) { revert(_2, _2) }  // revert if calldata size is > 4 bytes
-    let _3 := sload(/** @src 38:617:618  "b" */ 0x01)
-    /// @src 38:492:1251  "contract StoragePacking is StorageLayout {..."
-    if eq(_3, not(0)) // check if overflow, if yes revert with error code 0x11
+    // --snip--
+    if eq(_3, not(0)) // check if b is greater than max(uint256)
     {
         mstore(_2, shl(224, 0x4e487b71))
         mstore(4, 0x11)
@@ -180,13 +158,10 @@ case 0x102f49a5 { // writeUint256()
     return(_1, _2)
 }
 case 0x11c3a83a { // writeUint128()
-    if callvalue() { revert(_2, _2) } // revert if called with value since function is nonpayable
-    if slt(add(calldatasize(), not(3)), _2) { revert(_2, _2) }  // revert if calldata size is > 4 bytes
-    let _4 := sload(/** @src 38:861:862  "c" */ 0x03)
-    /// @src 38:492:1251  "contract StoragePacking is StorageLayout {..."
+    // --snip--
     let _5 := 0xffffffffffffffffffffffffffffffff
     let value := and(_4, _5)
-    if eq(value, _5) // check if _4 is greater than max(uint128)
+    if eq(value, _5) // check if c is greater than max(uint128)
     {
         mstore(_2, shl(224, 0x4e487b71))
         mstore(4, 0x11)
@@ -205,6 +180,7 @@ case 0x11c3a83a { // writeUint128()
 
 ### References
 
+- https://github.com/dragonfly-xyz/useful-solidity-patterns/tree/main/patterns/packing-storage
 - https://docs.soliditylang.org/en/latest/internals/layout_in_storage.html#layout-of-state-variables-in-storage
 
 **[⬆ back to top](#optimizations)**
@@ -215,7 +191,7 @@ Compared to regular state variables, the gas costs of constant and immutable var
 
 For a constant variable, the expression assigned to it is copied to all the places where it is accessed and also re-evaluated each time. This allows for local optimizations. Immutable variables are evaluated once at construction time and their value is copied to all the places in the code where they are accessed. For these values, 32 bytes are reserved, even if they would fit in fewer bytes. Due to this, constant values can sometimes be cheaper than immutable values.
 
-If we debug the functions `readConstant()` and `readImmutable()` in [Constant.sol](./src/Constant.sol), we can see that instead of an `SLOAD` operation, the compiler replaced the immutable variable with `push32 value` and the constant variable with `push8 value`.
+If we debug the functions `readConstant()` and `readImmutable()` in [Constant.sol](./src/Constant.sol) with `forge debug Constant --sig "readConstant()"` and `forge debug Immutable --sig "readImmutable()"`, we can see that instead of an `SLOAD` operation, the compiler replaced the immutable variable with `PUSH32(value)` and the constant variable with `PUSH4(value)`.
 
 ```solidity
 // size(address) = 20 bytes, but 32 bytes are reserverd for immutable variables
@@ -225,12 +201,12 @@ address immutable a;
 // 4 bytes, will be replaced with `PUSH4(0xaabbccdd)`
 bytes32 constant b = bytes32(hex"AABBCCDD");
 
-// 203 gas
+// 152 gas
 function readConstant() public pure returns (bytes32) {
     return c;
 }
 
-// 195 gas
+// 167 gas
 function readImmutable() public view returns (address) {
     return a;
 }
@@ -242,6 +218,8 @@ Only value types (e.g. `bool`, `intN`/`uintN`, `address`, `bytesN`, `enum`) can 
 
 - `forge test --mc ConstantTest -vvvv` - run gas tests
 - `forge inspect ConstantTest ir-optimized` - show optimized yul code
+- `forge debug Constant --sig "readConstant()"`
+- `forge debug Immutable --sig "readImmutable()"`
 
 ### References
 
@@ -254,7 +232,7 @@ Only value types (e.g. `bool`, `intN`/`uintN`, `address`, `bytesN`, `enum`) can 
 
 As a general rule, use bytes for arbitrary-length raw byte data and string for arbitrary-length string (UTF-8) data. If you can limit the length to a certain number of bytes, always use one of the value types bytes1 to bytes32 because they are much cheaper.
 
-The same applies for arrays. If you know that you will have at most a certain number of elements, always use a fixed array instead of a dynamic one. The reason is that a fixed array does not need a length parameter stored in storage and thus saves a slot.
+The same applies for arrays. If you know that you will have at most a certain number of elements, always use a fixed array instead of a dynamic one. The reason is that a fixed array does not need a length parameter stored in storage and thus saves one storage slot.
 
 ```solidity
 // 22260 gas
@@ -370,11 +348,11 @@ Transient storage will be included in the upcoming Cancun update.
 
 **[⬆ back to top](#optimizations)**
 
-## Use unchecked{} when possible (e.g. loops)
+## Use unchecked{} when possible (e.g. in loops)
 
 Solidity provides two ways to perform arithmetic operations: checked and unchecked. Checked operations throw an exception if an overflow or underflow occurs, while unchecked operations do not.
 
-Using `unchecked{}` is particularly useful in for loops for the incremented value because it is impossible to overflow without running out of gas first (in normal conditions).
+Using `unchecked{}` is particularly useful in for loops for the incremented value because it is impossible to overflow without running out of gas first (under normal conditions).
 
 ```solidity
 // 22352 gas
@@ -396,14 +374,12 @@ If we inspect the Yul code, we can observe that the function `increment_uint256(
 let _2 := 0
 
 case 0xc7fd0347 { // incrementUnchecked()
-    if callvalue() { revert(_2, _2) }
-    if slt(add(calldatasize(), not(3)), _2) { revert(_2, _2) }
+    // --snip--
     sstore(_2, add(sload(_2), 1))
     return(_1, _2)
 }
 case 0xd09de08a { // increment()
-    if callvalue() { revert(_2, _2) }
-    if slt(add(calldatasize(), not(3)), _2) { revert(_2, _2) }
+    // --snip--
     sstore(_2, increment_uint256(sload(_2)))
     return(mload(64), _2)
 }
@@ -431,30 +407,32 @@ function increment_uint256(value) -> ret
 
 One of the most well-known gas optimization tricks is using `++i` instead of `i++`. The former is slightly cheaper because `i++` saves the original value before incrementing it, requiring an extra DUP and POP opcode, which consume 3 and 2 gas respectively.
 
-However, this optimization is specific to the old compiler. In the new IR-based compilation (via_ir = true), this difference in gas costs is optimized away. As a result, there is no longer any distinction in gas costs between `++i` and `i++`.
+However, this optimization is specific to the old/legacy compiler. In the new IR-based compilation (via_ir = true), **the difference in gas costs is gone**.
 
 ```solidity
+// 22308 gas (with the old codegen)
+// 22245 gas (--via-ir enabled)
 function postIncrement() public {
     number++;
 }
 
+// 22303 gas (with the old codegen)
+// 22245 gas (--via-ir enabled)
 function preIncrement() public {
     ++number;
 }
 ```
 
-Results in:
+IR-based compilation:
 
 ```yul
 case 0x016e4842 { // postIncrement()
-    if callvalue() { revert(_1, _1) }
-    if slt(add(calldatasize(), not(3)), _1) { revert(_1, _1) }
+    // --snip--
     sstore(_1, increment_uint256(sload(_1)))
     return(mload(64), _1)
 }
 case 0x5b59b0c8 { // preIncrement()
-    if callvalue() { revert(_1, _1) }
-    if slt(add(calldatasize(), not(3)), _1) { revert(_1, _1) }
+    // --snip--
     sstore(_1, increment_uint256(sload(_1)))
     return(mload(64), _1)
 }
@@ -463,7 +441,7 @@ case 0x5b59b0c8 { // preIncrement()
 ### forge commands
 
 - `forge test --mc IncrementTest -vvvv` - run gas tests
-- `forge test --mc IncrementTest -vvvv --via-ir` - run gas tests with IR-based compilation
+- `forge test --mc IncrementTest -vvvv --via-ir` - run gas tests with IR-based compilation enabled
 - `forge inspect Increment ir-optimized` - show optimized yul code
 
 ### References
@@ -519,7 +497,7 @@ contract CustomError {
 }
 ```
 
-Inspecting the Yul code, we see that the traditional `require` error statement needs several `mstore` opcodes, while the custom error only needs one (for the error signature):
+Inspecting Yul, we see that the traditional `require` error statement needs several `mstore` opcodes, while the custom error only needs one (for the error signature):
 
 ```yul
 // require(msg.sender == owner, "Only owner can call this function");
@@ -536,9 +514,8 @@ if iszero(eq(caller(), and(_3, sub(shl(160, 1), 1))))
 // error OnlyOwner()
 if iszero(eq(caller(), and(_3, sub(shl(160, 1), 1))))
 {
-    /// @src 38:210:221  "OnlyOwner()"
     mstore(_1, shl(224, 0x5fc483c5))
-    revert(_1, /** @src 38:81:267  "contract CustomError {..." */ 4)
+    revert(_1, 4)
 }
 ```
 
@@ -557,7 +534,7 @@ We can also see that each 32-byte chunk (32 characters) of the revert string req
 
 ## Short revert strings
 
-Try to keep the length of your error strings below 32 characters, if you handle errors with the `require` statement to limit the usage of `mstore` opcodes. The shorter your revert strings, the cheaper the deployment costs as well.
+Try to keep the length of your error strings below 32 characters if you handle errors with the `require` statement to limit the usage of `mstore` opcodes. The shorter your revert strings, the cheaper the deployment costs as well.
 
 ```solidity
 // Deployment cost: 53416 gas
@@ -598,7 +575,7 @@ contract RevertLong {
 
 ## Revert as early as possible
 
-The execution of a function costs gas. The more code you execute, the more gas you will spend. Therefore, it is a good idea to revert as early as possible.
+The execution of a function costs gas. Try to revert as early as possible, to prevent useless execution costs.
 
 ```solidity
 // 225 gas
@@ -626,7 +603,7 @@ function lateRevert() public {
 
 If you have multiple conditions that need to be checked, it is recommended not to combine them using `&&` or `||`. Instead, use require chaining, where each condition is checked separately using multiple require statements.
 
-However, it is important to note that if you use error strings in your require statements, the deployment costs of the contract will increase.
+However, it is important to note that if you use error strings in your require statements the deployment costs of the contract will increase.
 
 ```solidity
 // 2279 gas
@@ -666,14 +643,19 @@ function greaterEqual(uint256 a, uint256 b) external pure returns (bool) {
 }
 ```
 
-If we inspect the Yul code, we can see the additional `isZero` instruction:
+We can see the additional `isZero` instruction in Yul:
 
 ```yul
-// Greater
-mstore(_1, gt(calldataload(4), calldataload(36)))
-
-// GreaterEqual
-mstore(_1, iszero(lt(calldataload(4), calldataload(36))))
+case 0x71343515 { // greater
+    // --snip--
+    mstore(memPos_1, /** @src 17:184:189  "a > b" */ gt(param_4, param_5))
+    return(memPos_1, 32)
+}
+case 0x82a1f94b { // greaterEqual
+    // --snip--
+    mstore(memPos_2, /** @src 17:333:339  "a >= b" */ iszero(lt(param_6, param_7)))
+    return(memPos_2, 32)
+}
 ```
 
 ### forge commands
@@ -757,8 +739,7 @@ Comparing the two `addMod` functions in Yul, it becomes apparent why using `addm
 
 ```yul
 case 0xb1d818a1 { // addModBad
-    if callvalue() { revert(_2, _2) }
-    if slt(add(calldatasize(), not(3)), 32) { revert(_2, _2) }
+    // --snip--
     let value := calldataload(4)
     if gt(value, add(value, 1))
     {
@@ -771,8 +752,7 @@ case 0xb1d818a1 { // addModBad
 }
 
 case 0xb1d818a1 { // addModGood
-    if callvalue() { revert(_2, _2) }
-    if slt(add(calldatasize(), not(3)), 32) { revert(_2, _2) }
+    // --snip--
     mstore(_1, addmod(calldataload(4), 1, 0x02))
     return(_1, 32)
 }
@@ -788,7 +768,7 @@ case 0xb1d818a1 { // addModGood
 
 ## Declare functions as payable
 
-By default, functions in Solidity are non-payable, meaning they do not accept Ether payments. However, if you explicitly declare a function as payable, the compiler will omit the `msg.value == zero` check when calling that function. This optimization can result in gas savings since the check for zero value is not necessary.
+By default, functions in Solidity are non-payable, meaning they do not accept Ether payments. However, if you explicitly declare a function as payable, the compiler will omit the `msg.value == zero` check when calling that function.
 
 ```solidity
 // Deployment cost: 9642 gas
@@ -808,10 +788,18 @@ contract NonPayable {
 }
 ```
 
-Inspecting the Yul code [Payable.yulp](./src/ir-optimized/Payable.yulp), we can see that this line is removed
+And the Yul representation of above functions:
 
 ```yul
-if callvalue() { revert(0, 0) }
+case 0xc2985578 { // foo()
+    if slt(add(calldatasize(), not(3)), _2) { revert(_2, _2) }
+    return(_1, _2)
+}
+case 0xfebb0f7e { // bar()
+    if callvalue() { revert(_2, _2) } // this check is missing in foo()
+    if slt(add(calldatasize(), not(3)), _2) { revert(_2, _2) }
+    return(_1, _2)
+}
 ```
 
 It's important to note that declaring a function as payable should only be done when the function actually needs to receive Ether payments. Otherwise, it is recommended to keep the function as non-payable to ensure proper handling of Ether transactions and avoid unintended behaviors.
@@ -819,8 +807,7 @@ It's important to note that declaring a function as payable should only be done 
 ### forge commands
 
 - `forge test --mc PayableTest -vvvv` - run gas tests
-- `forge inspect Payable ir-optimized` - show optimized yul code
-- `forge inspect NonPayable ir-optimized` - show optimized yul code
+- `forge inspect PayableCombined ir-optimized` - show optimized yul code
 
 **[⬆ back to top](#optimizations)**
 
@@ -853,7 +840,7 @@ Displaying the function selectors with `forge inspect FunctionOrder methods` sho
 }
 ```
 
-Since the function selectors are ordered in hexadecimal order, the order of the functions is `a, b, d, c`. By inspecting the Yul code, we can confirm that this is the case:
+Since the function selectors are ordered in hexadecimal order, the order of the functions is `a, b, d, c`. Taking a look at the Yul code, we can confirm that this is the case:
 
 ```yul
 {
@@ -875,7 +862,9 @@ Since the function selectors are ordered in hexadecimal order, the order of the 
 
 ## Limit modifiers
 
-When you add a function modifier in Solidity, the code of the modified function is inserted into the modifier. If the same modifier is used multiple times, the code is duplicated, increasing the bytecode size. On the other hand, internal functions are called separately and save bytecode in deployment. Internal functions incur a slight runtime cost due to function calls. This means they are slightly more expensive in execution costs but save a lot of redundant bytecode in deployment.
+When you add a function modifier in Solidity, the code of the modified function is inserted into the modifier. If the same modifier is used multiple times, the code is duplicated, increasing the bytecode size.
+
+On the other hand, internal functions are called separately and save bytecode in deployment. Internal functions incur a slight runtime cost due to function calls. This means they are slightly more expensive in execution costs but save a lot of redundant bytecode in deployment.
 
 ### References
 
@@ -886,7 +875,7 @@ When you add a function modifier in Solidity, the code of the modified function 
 
 ## Indexed events
 
-You can include up to three (four for anonymous events) indexed parameters in an event in Solidity. These indexed parameters are stored in a special data structure called "topics" instead of the data part of the event log. The first topic of an event is always the event signature, unless the event is declared as anonymous.
+You can include up to three (four for anonymous events) indexed parameters in an event in Solidity. These indexed parameters are stored in a special data structure called "topics" instead of the data part of the event log. The first topic of an event is always the event signature, unless the event is declared as anonymous, which makes them the cheapest to use.
 
 Using indexed parameters allows you to efficiently search for specific events when filtering a sequence of blocks. Each indexed parameter included in an event costs an additional 375 gas.
 
@@ -896,7 +885,9 @@ static_gas = 375
 dynamic_gas = 375 * topic_count + 8 * size + memory_expansion_cost
 ```
 
-Depending on the type of parameter it is cheaper to not declare it as indexed. For example, string parameters are cheaper to declare as indexed because the cost of expanding memory for string storage is higher than the cost of adding a topic. On the other hand, for uint256 parameters, it is the opposite scenario, where it is more efficient to declare them as non-indexed. Adding a topic has a higher cost compared to directly storing the uint256 value in the data part of the event log.
+Depending on the type of parameter it is cheaper to not declare it as indexed. For example, string parameters are cheaper to declare as indexed because the memory expansion cost is higher than the static cost of 375 gas for topics.
+
+For uint256 parameters it is the opposite: It is more efficient to declare them as non-indexed. Adding a topic has a higher cost compared to directly storing the uint256 value in the data part of the event log.
 
 ```solidity
 // 1352 gas
