@@ -5,21 +5,25 @@ import "forge-std/Test.sol";
 import "src/Constant.sol";
 
 contract ConstantTest is Test {
-    Constant public instance;
+    Constant public constantInstance;
+    Immutable public immutableInstance;
+    Mutable public mutableInstance;
 
     function setUp() public {
-        instance = new Constant();
+        constantInstance = new Constant();
+        immutableInstance = new Immutable();
+        mutableInstance = new Mutable();
     }
 
     function testReadConstant() public view returns (bytes32) {
-        return instance.readConstant();
+        return constantInstance.readConstant();
     }
 
     function testReadImmutable() public view returns (address) {
-        return instance.readImmutable();
+        return immutableInstance.readImmutable();
     }
 
     function testReadMutable() public view returns (uint256) {
-        return instance.readMutable();
+        return mutableInstance.readMutable();
     }
 }

@@ -1,62 +1,34 @@
-/// @use-src 46:"src/Payable.sol"
-object "Payable_33457" {
+/// @use-src 59:"src/Payable.sol"
+object "PayableCombined_35488" {
     code {
         {
-            /// @src 46:86:189  "contract Payable {..."
-            let _1 := memoryguard(0x80)
-            mstore(64, _1)
-            let _2 := datasize("Payable_33457_deployed")
-            codecopy(_1, dataoffset("Payable_33457_deployed"), _2)
-            return(_1, _2)
-        }
-    }
-    /// @use-src 46:"src/Payable.sol"
-    object "Payable_33457_deployed" {
-        code {
-            {
-                /// @src 46:86:189  "contract Payable {..."
-                if iszero(lt(calldatasize(), 4))
-                {
-                    if eq(0xc2985578, shr(224, calldataload(0)))
-                    {
-                        if slt(add(calldatasize(), not(3)), 0) { revert(0, 0) }
-                        return(memoryguard(0x80), 0)
-                    }
-                }
-                revert(0, 0)
-            }
-        }
-        data ".metadata" hex"a164736f6c6343000810000a"
-    }
-}
-
-
-/// @use-src 46:"src/Payable.sol"
-object "NonPayable_33466" {
-    code {
-        {
-            /// @src 46:221:311  "contract NonPayable {..."
+            /// @src 59:313:363  "contract PayableCombined is Payable, NonPayable {}"
             let _1 := memoryguard(0x80)
             mstore(64, _1)
             if callvalue() { revert(0, 0) }
-            let _2 := datasize("NonPayable_33466_deployed")
-            codecopy(_1, dataoffset("NonPayable_33466_deployed"), _2)
+            let _2 := datasize("PayableCombined_35488_deployed")
+            codecopy(_1, dataoffset("PayableCombined_35488_deployed"), _2)
             return(_1, _2)
         }
     }
-    /// @use-src 46:"src/Payable.sol"
-    object "NonPayable_33466_deployed" {
+    /// @use-src 59:"src/Payable.sol"
+    object "PayableCombined_35488_deployed" {
         code {
             {
-                /// @src 46:221:311  "contract NonPayable {..."
+                /// @src 59:313:363  "contract PayableCombined is Payable, NonPayable {}"
+                let _1 := memoryguard(0x80)
                 if iszero(lt(calldatasize(), 4))
                 {
-                    let _1 := 0
-                    if eq(0xfebb0f7e, shr(224, calldataload(_1)))
-                    {
-                        if callvalue() { revert(_1, _1) }
-                        if slt(add(calldatasize(), not(3)), _1) { revert(_1, _1) }
-                        return(memoryguard(0x80), _1)
+                    let _2 := 0
+                    switch shr(224, calldataload(_2))
+                    case 0xc2985578 {
+                        if slt(add(calldatasize(), not(3)), _2) { revert(_2, _2) }
+                        return(_1, _2)
+                    }
+                    case 0xfebb0f7e {
+                        if callvalue() { revert(_2, _2) }
+                        if slt(add(calldatasize(), not(3)), _2) { revert(_2, _2) }
+                        return(_1, _2)
                     }
                 }
                 revert(0, 0)

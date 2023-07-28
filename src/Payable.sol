@@ -16,3 +16,5 @@ contract NonPayable {
     // 98 gas
     function bar() external {}
 }
+
+contract PayableCombined is Payable, NonPayable {}
