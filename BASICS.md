@@ -1,6 +1,6 @@
 # EVM Basics
 
-The Ethereum Virtual Machine is a stack-based computer, i.e. all instructions take their parameter from the stack (except PUSHx, which takes it from the code). It is deterministic, so it will always provide the same outputs for the same inputs, no matter the machine it is run on.
+The Ethereum Virtual Machine is a stack-based computer, i.e. all instructions take their parameter from the stack (except `PUSHx`, which takes it from the code). It is deterministic, so it will always provide the same outputs for the same inputs, no matter the machine it is run on.
 
 When the EVM executes a smart contract, it creates an execution context. It contains several data regions, a program counter, and other information like the current caller and the address of the current code. See the image below for more information.
 
@@ -58,7 +58,7 @@ From the Yellowpaper:
 
 This is also referred to as memory explosion since the cost of expanding memory is not linear but quadratic.
 
-Run `forge test --mc MemoryTest -vvvv` to see the gas costs and the costs of memory expansion in detail.
+> Run `forge test --mc MemoryTest -vvvv` to see the gas costs and the costs of memory expansion in detail. The optimizer has to be disabled to show accurate gas costs.
 
 ## Storage
 
@@ -122,7 +122,7 @@ If a storage variable is accessed the first time in a transaction, it costs an a
 
 Since EIP-2930, it is possible to specify a list of addresses and storage keys that will be touched during the transaction execution. When an address or storage slot is present in that list, it is called "warm"; otherwise, it is "cold." This allows reducing the gas costs for storage reads and writes as seen in the image above. See the links in the references for more information.
 
-Run `forge test --mc StorageTest -vvvv` to see the gas costs in detail.
+> Run `forge test --mc StorageTest -vvvv` to see the gas costs in detail. The optimizer has to be disabled to show accurate gas costs.
 
 ## Calldata
 
