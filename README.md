@@ -17,12 +17,10 @@ You can use Foundry to look into certain code snippets in detail. Most gas optim
 
 Useful forge commands for inspecting and debugging contracts in this repository:
 
-- `forge test --mc <contract_name> -vvvv` // running tests, showing stack traces
+- `forge test --mc <contract_name> -vvvv` // run tests and show stack traces
 - `forge inspect <Contract> ir-optimized` // show optimized Yul
 - `forge inspect <Contract> methods` // show function selectors
-- `forge debug --debug <Contract> --sig "incrementUnchecked()"` // debug functions
-
-Unless otherwise noted, the optimizer is enabled with with 200 runs.
+- `forge debug --debug <Contract> --sig "foo()"` // debug functions
 
 ## Practice
 

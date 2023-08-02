@@ -89,7 +89,7 @@ Why are there only three sstore instructions, when we have 4 vars in total? The 
 ### forge commands
 
 - `forge test --mc DefaultVarsTest -vvvv` - run gas tests
-- `forge inspect DefaultVars ir-optimized` - show optimized yul code
+- `forge inspect DefaultVars ir-optimized` - show optimized Yul assembly
 
 **[⬆ back to top](#optimizations)**
 
@@ -176,7 +176,7 @@ case 0x11c3a83a { // writeUint128()
 ### forge commands
 
 - `forge test --mc StoragePackingTest -vvvv` - run gas tests
-- `forge inspect StoragePackingTest ir-optimized` - show optimized yul code
+- `forge inspect StoragePackingTest ir-optimized` - show optimized Yul assembly
 
 ### References
 
@@ -217,7 +217,7 @@ Only value types (e.g. `bool`, `intN`/`uintN`, `address`, `bytesN`, `enum`) can 
 ### forge commands
 
 - `forge test --mc ConstantTest -vvvv` - run gas tests
-- `forge inspect ConstantTest ir-optimized` - show optimized yul code
+- `forge inspect ConstantTest ir-optimized` - show optimized Yul assembly
 - `forge debug Constant --sig "readConstant()"`
 - `forge debug Immutable --sig "readImmutable()"`
 
@@ -259,7 +259,7 @@ function setDynamicBytes() public {
 ### forge commands
 
 - `forge test --mc FixedSizeTest -vvvv` - run gas tests
-- `forge inspect FixedSizeTest ir-optimized` - show optimized yul code
+- `forge inspect FixedSizeTest ir-optimized` - show optimized Yul assembly
 
 ### References
 
@@ -302,7 +302,7 @@ In the optimized function, we have a total of 11 SLOAD operations and 1 SSTORE o
 ### forge commands
 
 - `forge test --mc VariableCachingTest -vvvv` - run gas tests
-- `forge inspect VariableCachingTest ir-optimized` - show optimized yul code
+- `forge inspect VariableCachingTest ir-optimized` - show optimized Yul assembly
 
 ### References
 
@@ -399,7 +399,7 @@ function increment_uint256(value) -> ret
 ### forge commands
 
 - `forge test --mc UncheckedTest -vvvv` - run gas tests
-- `forge inspect Unchecked ir-optimized` - show optimized yul code
+- `forge inspect Unchecked ir-optimized` - show optimized Yul assembly
 
 **[⬆ back to top](#optimizations)**
 
@@ -442,7 +442,7 @@ case 0x5b59b0c8 { // preIncrement()
 
 - `forge test --mc IncrementTest -vvvv` - run gas tests
 - `forge test --mc IncrementTest -vvvv --via-ir` - run gas tests with IR-based compilation enabled
-- `forge inspect Increment ir-optimized` - show optimized yul code
+- `forge inspect Increment ir-optimized` - show optimized Yul assembly
 
 ### References
 
@@ -524,7 +524,7 @@ We can also see that each 32-byte chunk (32 characters) of the revert string req
 ### forge commands
 
 - `forge test --mc CustomErrorTest -vvvv` - run gas tests
-- `forge inspect CustomError ir-optimized` - show optimized yul code
+- `forge inspect CustomError ir-optimized` - show optimized Yul assembly
 
 ### References
 
@@ -565,7 +565,7 @@ contract RevertLong {
 ### forge commands
 
 - `forge test --mc RevertStringsTest -vvvv` - run gas tests
-- `forge inspect RevertStrings ir-optimized` - show optimized yul code
+- `forge inspect RevertStrings ir-optimized` - show optimized Yul assembly
 
 ### References
 
@@ -661,7 +661,7 @@ case 0x82a1f94b { // greaterEqual
 ### forge commands
 
 - `forge test --mc ComparisonTest -vvvv` - run gas tests
-- `forge inspect Comparison ir-optimized` - show optimized yul code
+- `forge inspect Comparison ir-optimized` - show optimized Yul assembly
 
 **[⬆ back to top](#optimizations)**
 
@@ -704,8 +704,8 @@ if eq(0x3e823f79, shr(224, calldataload(0)))
 ### forge commands
 
 - `forge test --mc BitShiftTest -vvvv` - run gas tests
-- `forge inspect BitShift ir-optimized` - show optimized yul code
-- `forge inspect NoBitShift ir-optimized` - show optimized yul code
+- `forge inspect BitShift ir-optimized` - show optimized Yul assembly
+- `forge inspect NoBitShift ir-optimized` - show optimized Yul assembly
 
 **[⬆ back to top](#optimizations)**
 
@@ -761,8 +761,8 @@ case 0xb1d818a1 { // addModGood
 ### forge commands
 
 - `forge test --mc ModuloTest -vvvv` - run gas tests
-- `forge inspect ModuloGood ir-optimized` - show optimized yul code
-- `forge inspect ModuloBad ir-optimized` - show optimized yul code
+- `forge inspect ModuloGood ir-optimized` - show optimized Yul assembly
+- `forge inspect ModuloBad ir-optimized` - show optimized Yul assembly
 
 **[⬆ back to top](#optimizations)**
 
@@ -807,7 +807,7 @@ It's important to note that declaring a function as payable should only be done 
 ### forge commands
 
 - `forge test --mc PayableTest -vvvv` - run gas tests
-- `forge inspect PayableCombined ir-optimized` - show optimized yul code
+- `forge inspect PayableCombined ir-optimized` - show optimized Yul assembly
 
 **[⬆ back to top](#optimizations)**
 
@@ -856,7 +856,7 @@ Since the function selectors are ordered in hexadecimal order, the order of the 
 
 - `forge test --mc FunctionOrderTest -vvvv` - run gas tests
 - `forge inspect FunctionOrder methods` - show function selectors
-- `forge inspect FunctionOrder ir-optimized` - show optimized yul code
+- `forge inspect FunctionOrder ir-optimized` - show optimized Yul assembly
 
 **[⬆ back to top](#optimizations)**
 
