@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.16;
 
+// Deployment cost: 24875 gas
 contract PostIncrement {
     uint256 internal number;
 
@@ -11,6 +12,7 @@ contract PostIncrement {
     }
 }
 
+// Deployment cost: 24475 gas
 contract PreIncrement {
     uint256 internal number;
 

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.16;
 
+// Deployment cost: 16869 gas
 contract Constant {
     // 4 bytes, will be replaced with `PUSH4(0xaabbccdd)`
     bytes32 constant b = bytes32(hex"AABBCCDD");
@@ -12,6 +13,7 @@ contract Constant {
     }
 }
 
+// Deployment cost: 23905 gas
 contract Immutable {
     // size(address) = 20 bytes, but 32 bytes are reserverd for immutable variables
     // compiler will replace `a` with `PUSH32(address)`
@@ -28,6 +30,7 @@ contract Immutable {
     }
 }
 
+// Deployment cost: 15869 gas
 contract Mutable {
     uint256 c;
 
