@@ -9,7 +9,7 @@ This guide is aimed at developers who are already familiar with Solidity and wan
 - [Introduction](INTRO.md)
   - General overview of gas in Ethereum
 - [EVM Basics](BASICS.md)
-  - Necessary background knowledge about the EVM (Storage, Memory, Calldata)
+  - Necessary background knowledge about the EVM (i.e. data locations)
 - [Gas optimization techniques](OPTIMIZATIONS.md)
   - Extensive collection of gas optimization techniques
 

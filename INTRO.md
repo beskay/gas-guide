@@ -27,7 +27,7 @@ The more complex your transaction is, meaning the more instructions it takes to 
 
 To prevent the network from being clogged up with transactions that use too much gas, there is a current block gas limit of 30 million gas. If a transaction exceeds the block gas limit, it will be rejected.
 
-A seen above a standard ETH transfer costs 21k gas, which is the minimum amount of gas required to execute a transaction on the Ethereum network. So in theory, you could fit 1428 ETH transfers in a block (30 million / 21k).
+A seen above a standard ETH transfer costs 21k gas, which is the minimum amount required to execute a transaction on the Ethereum network. So in theory, you could fit 1428 ETH transfers in a block (30 million / 21k).
 
 ## Gas price
 

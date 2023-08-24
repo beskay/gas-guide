@@ -10,7 +10,7 @@ When the EVM executes a smart contract, it creates an execution context. It cont
 
 ### Basics
 
-The stack is a LIFO (last in, first out) data structure. It is used to store data and intermediate results during execution. The stack has a maximum size of 1024 elements, but only the first 16 elements are accessible -- if you try to access an element further down, you will be greeted with the infamous `Stack too deep` error. Each element on the stack has a size of 256 bits.
+The stack is a LIFO (last in, first out) data structure. It is used to store data and intermediate results during execution. The stack has a maximum size of 1024 elements, but only the first 16 elements are accessible -- if you try to access an element further down, you run into the infamous `Stack too deep` error. Each element on the stack has a size of 256 bits.
 
 ### Gas costs related to the stack
 
@@ -148,7 +148,7 @@ The opcodes related to calldata are:
 
 A byte of calldata costs either 4 gas (if it is zero) or 16 gas (if it is any other value). The gas cost for non-zero bytes was reduced from 68 to 16 with EIP-2028 to increase the scalability of L2s.
 
-**While calldata is cheap on mainnet, it is the expensive on Layer 2s.** This is because rollups pay cheap layer-2 fees for execution and storage but expensive layer-1 fees to publish their data on Ethereum.
+**While calldata is cheap on mainnet, it isn't on Layer 2s.** This is because rollups pay cheap layer-2 fees for execution and storage but expensive layer-1 fees to publish their data on Ethereum.
 
 The calldata costs will be significantly reduced with proto-danksharding (EIP-4844). For now, there are calldata compression techniques that can be used to reduce the gas costs, such as [LibZip](https://github.com/Vectorized/solady/blob/main/src/utils/LibZip.sol), which is using selective run length encoding (RLE) to reduce the calldata size.
 

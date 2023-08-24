@@ -29,7 +29,7 @@ contract StorageLayout {
     bool d; // slot 4
     address e; // slot 4, offset 1 byte (size of bool is 1 byte)
 
-    // enums are uint8 by default
+    // enums are uint8 by default (if they have less than 256 elements)
     enum ActionChoices {
         GoLeft,
         GoRight,

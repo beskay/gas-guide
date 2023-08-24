@@ -2,7 +2,7 @@
 
 ### Storage related
 
-Since storage operations are among the most expensive opcodes, there is also the most potential to save gas costs.
+Since storage operations are among the most expensive instructions, there is also the most potential to save gas.
 
 - [Dont initialize default variables](#dont-initialize-default-variables)
 - [Storage packing](#storage-packing)
@@ -45,7 +45,7 @@ Since storage operations are among the most expensive opcodes, there is also the
 
 ## Dont initialize default variables
 
-The default value for all locations in contract storage is zero (`0` for `uint`, `false` for `bool`, `0x00..00` for address, ...). Initializing variables with their default value is therefore not necessary and is just a waste of gas.
+The default value for all locations in contract storage is zero (`0` for `uint`, `false` for `bool`, `0x00..00` for address, ...). Initializing variables with their default value is therefore not necessary and just wastes gas.
 
 [DefaultVars.sol](./contracts/DefaultVars.sol)
 
@@ -82,7 +82,7 @@ codecopy(_1, dataoffset("DefaultVars_29531_deployed"), _2)
 return(_1, _2)
 ```
 
-There are three additional SSTORE instructions, each costing 2.2k gas (see `testZeroToZero()` in [StorageTest](./test/basics/Storage.t.sol) for more information).
+There are three additional SSTORE instructions, each costing 2.2k gas (see also `testZeroToZero()` in [StorageTest](./test/basics/Storage.t.sol)).
 
 Why are there only three sstore instructions, when we have 4 vars in total? The answer is variable packing. The compiler places the bool and the address in the same storage slot since they both fit into 32 bytes. Therefore, only a single SSTORE operation is necessary -> [Storage packing](#storage-packing).
 
@@ -126,7 +126,7 @@ case 0x33fe0dda { // writeStruct()
 
 ### Warning: Reduced-size types
 
-While storage packing usually saves gas, it is important to note that it can also increase gas usage. This is because the EVM operates on 32 bytes at a time. Therefore, if the element is smaller than that, the EVM must use more operations in order to reduce the size of the element from 32 bytes to the desired size. For example, see functions `writeUint128` and `writeUint256` in [StoragePacking.sol](./contracts/StoragePacking.sol).
+While storage packing usually saves gas, it is important to note that it can also increase gas usage. This is because the EVM operates on 32 bytes at a time. If the element is smaller than that, the EVM must use more operations in order to reduce the size of the element from 32 bytes to the desired size. For example, see functions `writeUint128` and `writeUint256` in [StoragePacking.sol](./contracts/StoragePacking.sol).
 
 ```solidity
 // Execution cost: 22306 gas
@@ -230,9 +230,9 @@ Only value types (e.g. `bool`, `intN`/`uintN`, `address`, `bytesN`, `enum`) can 
 
 ## Fixed size variables are cheaper than dynamic size variables
 
-As a general rule, use bytes for arbitrary-length raw byte data and string for arbitrary-length string (UTF-8) data. If you can limit the length to a certain number of bytes, always use one of the value types bytes1 to bytes32 because they are much cheaper.
+As a general rule, use bytes for arbitrary-length raw byte data and string for arbitrary-length string (UTF-8) data. If you can limit the length to a certain number of bytes, always use one of the value types (`bytes1` to `bytes32`) because they are much cheaper.
 
-The same applies for arrays. If you know that you will have at most a certain number of elements, always use a fixed array instead of a dynamic one. The reason is that a fixed array does not need a length parameter stored in storage and thus saves one storage slot.
+The same applies for arrays: If you know that you will have at most a certain number of elements, always use a fixed array instead of a dynamic one. The reason is that a fixed array does not need a length parameter in storage and thus saves one storage slot.
 
 ```solidity
 // 22260 gas
@@ -352,7 +352,7 @@ Transient storage will be included in the upcoming Cancun update.
 
 Solidity provides two ways to perform arithmetic operations: checked and unchecked. Checked operations throw an exception if an overflow or underflow occurs, while unchecked operations do not.
 
-Using `unchecked{}` is particularly useful in for loops for the incremented value because it is impossible to overflow without running out of gas first (under normal conditions).
+Using `unchecked{}` is particularly useful in for loops for the incremented value because it is impossible to overflow without running out of gas first (under normal conditions -> make sure your code is secure and cant overflow!).
 
 ```solidity
 // 22352 gas
@@ -368,7 +368,7 @@ function incrementUnchecked() public {
 }
 ```
 
-If we inspect the Yul code, we can observe that the function `increment_uint256(value)` is called when we increment `number`. On the other hand, `unchecked { number++; }` is compiled to `sstore(_2, add(sload(_2), 1))`. This means that the number is incremented directly without performing any checks.
+If we inspect the Yul representation of above code, we can observe that function `increment_uint256(value)` is called when we increment `number`. On the other hand, `unchecked { number++; }` is directly compiled to `sstore(_2, add(sload(_2), 1))`, incrementing it without performing any checks.
 
 ```yul
 let _2 := 0
@@ -405,7 +405,7 @@ function increment_uint256(value) -> ret
 
 ## Pre-increment vs. Post-increment
 
-One of the most well-known gas optimization tricks is using `++i` instead of `i++`. The former is slightly cheaper because `i++` saves the original value before incrementing it, requiring an extra DUP and POP opcode, which consume 3 and 2 gas respectively.
+One of the most well-known gas optimization tricks is using `++i` instead of `i++`. The former is slightly cheaper because `i++` saves the original value before incrementing it, requiring an extra `DUP` and `POP` opcode, which consume 3 and 2 gas respectively.
 
 However, this optimization is specific to the old/legacy compiler. In the new IR-based compilation (via_ir = true), **the difference in gas costs is gone**.
 
@@ -423,7 +423,7 @@ function preIncrement() public {
 }
 ```
 
-IR-based compilation:
+IR-based compilation (code is identical for both functions):
 
 ```yul
 case 0x016e4842 { // postIncrement()
@@ -463,7 +463,7 @@ function argAsCalldata(string calldata name) external pure {}
 function argAsMemory(string memory name) external pure {}
 ```
 
-If `calldata` is used, the data is read directly via `calldataload`. On the other hand, if `memory` is used, the data is copied to memory first, which is more expensive.
+If `calldata` is used, the data is read directly via `calldataload`. On the other hand, if `memory` is used, the data is copied to memory first, using additional instructions.
 
 ### forge commands
 
@@ -802,7 +802,7 @@ case 0xfebb0f7e { // bar()
 }
 ```
 
-It's important to note that declaring a function as payable should only be done when the function actually needs to receive Ether payments. Otherwise, it is recommended to keep the function as non-payable to ensure proper handling of Ether transactions and avoid unintended behaviors.
+It's important to note that declaring a function as payable can be a security risk. Make sure you don't break the functionality of your contract.
 
 ### forge commands
 
