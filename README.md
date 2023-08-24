@@ -33,7 +33,7 @@ Practice by completing the challenges in [`./src/practice/`](./src/practice/). T
 
 `ArraySum` is an example contract where you can apply various gas optimization patterns. The required gas goal is achieveable by just using the patterns described in the [Gas optimization techniques](OPTIMIZATIONS.md) section.
 
-`Airdrop`, `BadERC20` and `BadERC721` are inefficient contracts that have been deployed onchain. Note: `Airdrop` is just inefficient, but the code quality itself is good. However, the quality of `BadERC721` and especially `BadERC20` can be improved. Try to improve them as much as you can. You can use the following test cases to track your progress:
+`Airdrop`, `BadERC20` and `BadERC721` are inefficient contracts that have been deployed onchain. Try to improve them as much as you can. You can use the following test cases to track your progress:
 
 - `forge test --mc ArraySumTest`
 - `forge test --mc AirdropTest`
